@@ -4,14 +4,10 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>SmartPark - Your Smart Parking Solution</title>
-    <!-- Tailwind CSS CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
-    <!-- Inter Font -->
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800;900&display=swap" rel="stylesheet">
-    <!-- React and ReactDOM CDNs -->
     <script crossorigin src="https://unpkg.com/react@18/umd/react.development.js"></script>
     <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
-    <!-- Babel CDN for JSX transformation in browser -->
     <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
 
     <style>
@@ -91,8 +87,7 @@
                 localParkingTax: (rate) => `Local Parking Tax (${rate}%):`,
                 totalAmount: "Total Amount:",
                 confirmBooking: "Confirm Booking & Pay",
-                bookingConfirmed: "Booking Confirmed",
-                proceedingToPayment: "Your booking is confirmed! Proceeding to payment.",
+                bookingConfirmed: "Your booking is confirmed! Proceeding to payment.",
                 completePayment: "Complete Payment",
                 amountDue: "Amount Due:",
                 payWithUPI: "Pay with UPI",
@@ -542,1562 +537,1304 @@
             const { appLanguage } = useContext(LanguageContext);
             const t = translations[appLanguage];
             const [email, setEmail] = useState('');
+            const [modalShow, setModalShow] = useState(false);
 
-            const handleSubmit = (e) => {
-                e.preventDefault();
-                showModal(t.resetPassword, t.resetLinkSent);
-                setEmail('');
+            const handleResetPassword = () => {
+                if (email) {
+                    // In a real application, you would send an API request here
+                    setModalShow(true);
+                }
             };
 
             return (
-                <div className="flex flex-col items-center justify-center min-h-[calc(100vh-160px)] p-4 bg-white text-blue-900">
-                    <div className="bg-blue-50 rounded-2xl p-8 shadow-xl max-w-md w-full border border-blue-200">
-                        <h2 className="text-3xl font-bold text-amber-600 mb-6 text-center">{t.forgotPassword}</h2>
-                        <p className="text-blue-800 mb-4 text-center">{t.enterEmailForReset}</p>
-                        <form onSubmit={handleSubmit} className="space-y-4">
-                            <div>
-                                <label htmlFor="reset-email" className="block text-blue-800 text-sm font-bold mb-2">{t.email}</label>
-                                <input 
-                                    type="email" 
-                                    id="reset-email" 
-                                    value={email} 
-                                    onChange={(e) => setEmail(e.target.value)} 
-                                    className="w-full p-3 rounded-xl bg-blue-100 text-blue-900 placeholder-blue-400 focus:outline-none focus:ring-2 focus:ring-amber-400" 
-                                    placeholder="your.email@example.com"
-                                    aria-label={t.email}
-                                />
-                            </div>
-                            <button 
-                                type="submit" 
-                                className="w-full bg-pink-600 text-white font-bold py-3 px-6 rounded-xl hover:bg-pink-700 transition duration-300 shadow-lg"
-                                aria-label={t.sendResetLink}
-                            >
-                                {t.sendResetLink}
-                            </button>
-                        </form>
-                        <button 
-                            onClick={onBackToLogin} 
-                            className="mt-6 w-full text-blue-800 font-bold py-2 px-4 rounded-xl hover:bg-blue-100 transition duration-300"
-                            aria-label={t.backToLogin}
+                <div className="flex flex-col items-center justify-center min-h-screen bg-gradient-to-br from-blue-100 to-indigo-200 p-4">
+                    <div className="bg-white p-8 rounded-2xl shadow-xl w-full max-w-md transform transition-all duration-300 scale-100 opacity-100">
+                        <h2 className="text-3xl font-extrabold text-blue-800 mb-6 text-center">{t.resetPassword}</h2>
+                        <p className="text-gray-600 mb-6 text-center">{t.enterEmailForReset}</p>
+                        <input
+                            type="email"
+                            placeholder={t.email}
+                            value={email}
+                            onChange={(e) => setEmail(e.target.value)}
+                            className="w-full p-3 mb-4 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                        />
+                        <button
+                            onClick={handleResetPassword}
+                            className="w-full bg-blue-600 text-white font-bold py-3 px-6 rounded-xl hover:bg-blue-700 transition duration-300 shadow-lg"
+                        >
+                            {t.sendResetLink}
+                        </button>
+                        <button
+                            onClick={onBackToLogin}
+                            className="w-full mt-4 text-blue-600 hover:underline font-semibold"
                         >
                             {t.backToLogin}
                         </button>
                     </div>
+                    <Modal
+                        show={modalShow}
+                        title={t.resetPassword}
+                        message={t.resetLinkSent}
+                        onClose={() => setModalShow(false)}
+                    />
                 </div>
             );
         };
 
-        // --- Customer App Screens ---
-
-        // Customer Login Screen
-        const CustomerLoginScreen = ({ onLoginSuccess, onRegisterClick, onForgotPasswordClick, onBackToUserTypeSelection, showModal }) => {
+        // --- Settings Screen ---
+        const SettingsScreen = ({ onBack, setAppLanguage }) => {
             const { appLanguage } = useContext(LanguageContext);
             const t = translations[appLanguage];
-            const [email, setEmail] = useState('');
-            const [password, setPassword] = useState('');
-
-            const handleLogin = (e) => {
-                e.preventDefault();
-                // Simple mock authentication
-                if (email === 'user@example.com' && password === 'password') {
-                    showModal(t.loginSuccessful, t.welcomeToSmartPark);
-                    onLoginSuccess();
-                } else {
-                    showModal(t.loginFailed, t.invalidCredentials);
-                }
-            };
 
             return (
-                <div className="flex flex-col items-center justify-center min-h-[calc(100vh-160px)] p-4 bg-white text-blue-900">
-                    <div className="bg-blue-50 rounded-2xl p-8 shadow-xl max-w-md w-full border border-blue-200">
-                        <h2 className="text-3xl font-bold text-amber-600 mb-6 text-center">{t.userLogin}</h2>
-                        <form onSubmit={handleLogin} className="space-y-4">
-                            <div>
-                                <label htmlFor="customer-email" className="block text-blue-800 text-sm font-bold mb-2">{t.email}</label>
-                                <input 
-                                    type="email" 
-                                    id="customer-email" 
-                                    value={email} 
-                                    onChange={(e) => setEmail(e.target.value)} 
-                                    className="w-full p-3 rounded-xl bg-blue-100 text-blue-900 placeholder-blue-400 focus:outline-none focus:ring-2 focus:ring-amber-400" 
-                                    placeholder="user@example.com"
-                                    aria-label={t.email}
-                                />
-                            </div>
-                            <div>
-                                <label htmlFor="customer-password" className="block text-blue-800 text-sm font-bold mb-2">{t.password}</label>
-                                <input 
-                                    type="password" 
-                                    id="customer-password" 
-                                    value={password} 
-                                    onChange={(e) => setPassword(e.target.value)} 
-                                    className="w-full p-3 rounded-xl bg-blue-100 text-blue-900 placeholder-blue-400 focus:outline-none focus:ring-2 focus:ring-amber-400" 
-                                    placeholder="password"
-                                    aria-label={t.password}
-                                />
-                            </div>
-                            <button 
-                                type="submit" 
-                                className="w-full bg-blue-600 text-white font-bold py-3 px-6 rounded-xl hover:bg-blue-700 transition duration-300 shadow-lg"
-                                aria-label={t.login}
-                            >
-                                {t.login}
-                            </button>
-                        </form>
-                        <button 
-                            onClick={onForgotPasswordClick} 
-                            className="mt-4 w-full text-blue-800 text-sm font-bold hover:underline"
-                            aria-label={t.forgotPassword}
-                        >
-                            {t.forgotPassword}
-                        </button>
-                        <button 
-                            onClick={onRegisterClick} 
-                            className="mt-2 w-full text-blue-800 font-bold py-2 px-4 rounded-xl hover:bg-blue-100 transition duration-300"
-                            aria-label={t.registerForSmartPark}
-                        >
-                            {t.registerForSmartPark}
-                        </button>
-                        <button 
-                            onClick={onBackToUserTypeSelection} 
-                            className="mt-4 w-full text-blue-800 font-bold py-2 px-4 rounded-xl hover:bg-blue-100 transition duration-300"
-                            aria-label={t.backToUserTypeSelection}
-                        >
-                            {t.backToUserTypeSelection}
-                        </button>
-                    </div>
-                </div>
-            );
-        };
+                <div className="flex flex-col items-center justify-center min-h-screen bg-gradient-to-br from-blue-100 to-indigo-200 p-4">
+                    <div className="bg-white p-8 rounded-2xl shadow-xl w-full max-w-2xl transform transition-all duration-300 scale-100 opacity-100">
+                        <h2 className="text-4xl font-extrabold text-blue-800 mb-8 text-center">{t.appSettings}</h2>
 
-
-        // Registration Screen (for Customer)
-        const RegistrationScreen = ({ onRegisterSuccess, onLoginClick, onBackToUserTypeSelection, showModal }) => {
-            const { appLanguage } = useContext(LanguageContext);
-            const t = translations[appLanguage];
-            const [name, setName] = useState('');
-            const [mobile, setMobile] = useState('');
-            const [email, setEmail] = useState('');
-            const [password, setPassword] = useState('');
-
-            const handleRegister = (e) => {
-                e.preventDefault();
-                if (name && mobile && email && password) {
-                    showModal(t.registrationSuccessful, t.welcomeToSmartPark);
-                    console.log(t.emailSent + email); // Simulate sending email
-                    onRegisterSuccess();
-                } else {
-                    showModal(t.registrationFailed, t.pleaseFillAllFields);
-                }
-            };
-
-            return (
-                <div className="flex flex-col items-center justify-center min-h-[calc(100vh-160px)] p-4 bg-white text-blue-900">
-                    <div className="bg-blue-50 rounded-2xl p-8 shadow-xl max-w-md w-full border border-blue-200">
-                        <h2 className="text-3xl font-bold text-amber-600 mb-6 text-center">{t.registerForSmartPark}</h2>
-                        <form onSubmit={handleRegister} className="space-y-4">
-                            <div>
-                                <label htmlFor="name" className="block text-blue-800 text-sm font-bold mb-2">{t.fullName}</label>
-                                <input 
-                                    type="text" 
-                                    id="name" 
-                                    value={name} 
-                                    onChange={(e) => setName(e.target.value)} 
-                                    className="w-full p-3 rounded-xl bg-blue-100 text-blue-900 placeholder-blue-400 focus:outline-none focus:ring-2 focus:ring-amber-400" 
-                                    placeholder="John Doe"
-                                    aria-label={t.fullName}
-                                />
-                            </div>
-                            <div>
-                                <label htmlFor="mobile" className="block text-blue-800 text-sm font-bold mb-2">{t.mobileNumber}</label>
-                                <input 
-                                    type="tel" 
-                                    id="mobile" 
-                                    value={mobile} 
-                                    onChange={(e) => setMobile(e.target.value)} 
-                                    className="w-full p-3 rounded-xl bg-blue-100 text-blue-900 placeholder-blue-400 focus:outline-none focus:ring-2 focus:ring-amber-400" 
-                                    placeholder="9876543210"
-                                    aria-label={t.mobileNumber}
-                                />
-                            </div>
-                            <div>
-                                <label htmlFor="email" className="block text-blue-800 text-sm font-bold mb-2">{t.email}</label>
-                                <input 
-                                    type="email" 
-                                    id="email" 
-                                    value={email} 
-                                    onChange={(e) => setEmail(e.target.value)} 
-                                    className="w-full p-3 rounded-xl bg-blue-100 text-blue-900 placeholder-blue-400 focus:outline-none focus:ring-2 focus:ring-amber-400" 
-                                    placeholder="john.doe@example.com"
-                                    aria-label={t.email}
-                                />
-                            </div>
-                            <div>
-                                <label htmlFor="password" className="block text-blue-800 text-sm font-bold mb-2">{t.password}</label>
-                                <input 
-                                    type="password" 
-                                    id="password" 
-                                    value={password} 
-                                    onChange={(e) => setPassword(e.target.value)} 
-                                    className="w-full p-3 rounded-xl bg-blue-100 text-blue-900 placeholder-blue-400 focus:outline-none focus:ring-2 focus:ring-amber-400" 
-                                    placeholder="********"
-                                    aria-label={t.password}
-                                />
-                            </div>
-                            <button 
-                                type="submit" 
-                                className="w-full bg-pink-600 text-white font-bold py-3 px-6 rounded-xl hover:bg-pink-700 transition duration-300 shadow-lg"
-                                aria-label={t.register}
-                            >
-                                {t.register}
-                            </button>
-                        </form>
-                        <button 
-                            onClick={onLoginClick} 
-                            className="mt-4 w-full text-blue-800 font-bold py-2 px-4 rounded-xl hover:bg-blue-100 transition duration-300"
-                            aria-label={t.userLogin}
-                        >
-                            {t.userLogin}
-                        </button>
-                        <button 
-                            onClick={onBackToUserTypeSelection} 
-                            className="mt-4 w-full text-blue-800 font-bold py-2 px-4 rounded-xl hover:bg-blue-100 transition duration-300"
-                            aria-label={t.backToUserTypeSelection}
-                        >
-                            {t.backToUserTypeSelection}
-                        </button>
-                    </div>
-                </div>
-            );
-        };
-
-
-        // Home Screen (Search & Map View)
-        const HomeScreen = ({ onSearchSuccess, showModal }) => {
-            const { appLanguage } = useContext(LanguageContext);
-            const t = translations[appLanguage];
-            const [location, setLocation] = useState('');
-            const [city, setCity] = useState('Bhubaneswar');
-
-            // Simulated map data for Bhubaneswar and Jamshedpur
-            const mapData = {
-                Bhubaneswar: {
-                    image: "https://placehold.co/800x400/ADD8E6/00008B?text=Bhubaneswar+Map",
-                    spots: [
-                        { id: 'BBSR-P1', type: 'parking', x: 20, y: 30, available: true, premium: false, occupancy: 50 },
-                        { id: 'BBSR-P2', type: 'parking', x: 45, y: 50, available: true, premium: true, occupancy: 80 },
-                        { id: 'BBSR-EV1', type: 'ev', x: 60, y: 20, available: true, occupancy: 30 },
-                        { id: 'BBSR-V1', type: 'valet', x: 75, y: 65, available: true, occupancy: 60 },
-                        { id: 'BBSR-P3', type: 'parking', x: 30, y: 70, available: false, occupancy: 100 },
-                    ]
-                },
-                Jamshedpur: {
-                    image: "https://placehold.co/800x400/ADD8E6/00008B?text=Jamshedpur+Map",
-                    spots: [
-                        { id: 'JSR-P1', type: 'parking', x: 15, y: 40, available: true, premium: false, occupancy: 40 },
-                        { id: 'JSR-P2', type: 'parking', x: 50, y: 25, available: true, premium: false, occupancy: 70 },
-                        { id: 'JSR-EV1', type: 'ev', x: 35, y: 60, available: true, occupancy: 20 },
-                        { id: 'JSR-V1', type: 'valet', x: 80, y: 45, available: true, occupancy: 50 },
-                        { id: 'JSR-P3', type: 'parking', x: 70, y: 10, available: false, occupancy: 90 },
-                    ]
-                },
-                Delhi: {
-                    image: "https://placehold.co/800x400/ADD8E6/00008B?text=Delhi+Map",
-                    spots: [] // No specific spots for coming soon city
-                },
-                Mumbai: {
-                    image: "https://placehold.co/800x400/ADD8E6/00008B?text=Mumbai+Map",
-                    spots: [] // No specific spots for coming soon city
-                },
-                Bangalore: { // Added missing Bangalore entry
-                    image: "https://placehold.co/800x400/ADD8E6/00008B?text=Bangalore+Map",
-                    spots: []
-                }
-            };
-
-            const currentMap = mapData[city];
-
-            const handleSearch = () => {
-                if (location.trim()) {
-                    showModal(t.searchResults, t.searchingForParking(location));
-                    onSearchSuccess();
-                } else {
-                    showModal(t.searchError, t.pleaseEnterLocation);
-                }
-            };
-
-            const handleCityChange = (e) => {
-                const selectedCity = e.target.value;
-                setCity(selectedCity);
-                if (!mapData[selectedCity] || mapData[selectedCity].spots.length === 0) { // Added check for mapData[selectedCity] existence
-                    showModal(t.comingSoon, t.comingSoonMessage);
-                }
-            };
-
-            const suggestedLocations = [
-                { name: "Market Building", distance: "1.2 km", availability: "High", type: "Last Booked" },
-                { name: "Infocity Mall", distance: "3.5 km", availability: "Medium", type: "Peak Hours" },
-                { name: "Railway Station", distance: "0.5 km", availability: "Low", type: "Filling Fast", spots: 5 },
-                { name: "City Center", distance: "2.0 km", availability: "High", type: "Last Booked" },
-                { name: "Tech Park", distance: "4.0 km", availability: "Medium", type: "Peak Hours" },
-            ];
-
-            const regularUsedLocations = [
-                { name: "Office Complex A", lastUsed: "Yesterday", spots: "3" },
-                { name: "City Hospital", lastUsed: "2 days ago", spots: "2" },
-            ];
-
-            return (
-                <div className="p-8 space-y-8 bg-white text-blue-900">
-                    <div className="bg-blue-50 rounded-2xl p-6 shadow-xl border border-blue-200">
-                        <h2 className="text-2xl font-bold text-amber-600 mb-4">{t.findYourParkingSpot}</h2>
-                        <div className="flex flex-col md:flex-row gap-4 mb-4">
-                            <select
-                                value={city}
-                                onChange={handleCityChange}
-                                className="p-3 rounded-xl bg-blue-100 text-blue-900 focus:outline-none focus:ring-2 focus:ring-amber-400"
-                                aria-label={t.selectCity}
-                            >
-                                <option value="Bhubaneswar">Bhubaneswar</option>
-                                <option value="Jamshedpur">Jamshedpur</option>
-                                <option value="Delhi">Delhi</option>
-                                <option value="Mumbai">Mumbai</option>
-                                <option value="Bangalore">Bangalore</option>
-                            </select>
-                            <input 
-                                type="text" 
-                                placeholder={t.enterLocation} 
-                                value={location} 
-                                onChange={(e) => setLocation(e.target.value)} 
-                                className="flex-grow p-3 rounded-xl bg-blue-100 text-blue-900 placeholder-blue-400 focus:outline-none focus:ring-2 focus:ring-amber-400"
-                                aria-label={t.enterLocation}
-                            />
-                            <button 
-                                onClick={handleSearch} 
-                                className="bg-purple-600 text-white font-bold py-3 px-6 rounded-xl hover:bg-purple-700 transition duration-300 shadow-lg"
-                                aria-label={t.search}
-                            >
-                                {t.search}
-                            </button>
-                        </div>
-                        <p className="text-blue-700 text-sm mt-3">{t.poweredByAI}</p>
-                    </div>
-
-                    <div className="bg-blue-50 rounded-2xl p-6 shadow-xl border border-blue-200">
-                        <h2 className="text-2xl font-bold text-blue-900 mb-4">{t.realTimeMapView}</h2>
-                        <div className="relative w-full h-96 rounded-xl overflow-hidden shadow-inner border border-blue-300">
-                            <img 
-                                src={currentMap.image} 
-                                alt={`${city} Map`} 
-                                className="absolute inset-0 w-full h-full object-cover" 
-                                onError={(e) => {e.target.onerror=null;e.target.src='https://placehold.co/800x400/ADD8E6/00008B?text=Map+Not+Available';}}
-                            />
-                            {currentMap.spots.map(spot => (
-                                <div 
-                                    key={spot.id} 
-                                    className={`absolute w-6 h-6 rounded-full flex items-center justify-center text-xs font-bold text-white cursor-pointer border-2
-                                        ${spot.available 
-                                            ? (spot.premium ? 'bg-amber-500 border-amber-700' : 'bg-green-500 border-green-700') 
-                                            : 'bg-red-500 border-red-700 opacity-70'
-                                        }
-                                        ${spot.type === 'ev' ? 'bg-blue-600 border-blue-800' : ''}
-                                        ${spot.type === 'valet' ? 'bg-purple-600 border-purple-800' : ''}
-                                    `}
-                                    style={{ left: `${spot.x}%`, top: `${spot.y}%` }}
-                                    title={
-                                        `${spot.id} - ${spot.available ? t.available : t.occupied}` +
-                                        `${spot.premium ? ` (${t.premium})` : ''}` +
-                                        `${spot.type === 'ev' ? ' (EV Charging)' : ''}` +
-                                        `${spot.type === 'valet' ? ' (Valet Parking)' : ''}`
-                                    }
-                                    onClick={() => showModal('Spot Info', `Details for ${spot.id}: ${spot.available ? t.available : t.occupied}. Type: ${spot.type}. Occupancy: ${spot.occupancy}%.`)}
-                                    aria-label={`Map spot ${spot.id}`}
-                                >
-                                    {spot.type === 'ev' ? '⚡' : spot.type === 'valet' ? '🅿️' : (spot.available ? 'P' : 'X')}
+                        <div className="space-y-6">
+                            {/* Language & Region */}
+                            <div className="bg-blue-50 p-6 rounded-xl border border-blue-200 shadow-sm">
+                                <h3 className="text-2xl font-bold text-blue-700 mb-3">{t.languageRegion}</h3>
+                                <p className="text-gray-700 mb-4">{t.currentLanguage(appLanguage)}</p>
+                                <div className="flex space-x-4">
+                                    <button
+                                        onClick={() => setAppLanguage('en')}
+                                        className={`py-2 px-5 rounded-lg font-semibold transition-all duration-300 ${
+                                            appLanguage === 'en' ? 'bg-blue-600 text-white shadow-md' : 'bg-gray-200 text-gray-800 hover:bg-gray-300'
+                                        }`}
+                                    >
+                                        English
+                                    </button>
+                                    <button
+                                        onClick={() => setAppLanguage('hi')}
+                                        className={`py-2 px-5 rounded-lg font-semibold transition-all duration-300 ${
+                                            appLanguage === 'hi' ? 'bg-blue-600 text-white shadow-md' : 'bg-gray-200 text-gray-800 hover:bg-gray-300'
+                                        }`}
+                                    >
+                                        हिन्दी
+                                    </button>
                                 </div>
-                            ))}
-                        </div>
-                        <div className="flex flex-wrap justify-center gap-4 mt-4 text-sm text-blue-700">
-                            <span className="flex items-center"><span className="w-3 h-3 rounded-full bg-green-500 mr-2"></span>{t.available}</span>
-                            <span className="flex items-center"><span className="w-3 h-3 rounded-full bg-amber-500 mr-2"></span>{t.premium}</span>
-                            <span className="flex items-center"><span className="w-3 h-3 rounded-full bg-red-500 mr-2"></span>{t.occupied}</span>
-                            <span className="flex items-center"><span className="w-3 h-3 rounded-full bg-blue-600 mr-2"></span>EV Charging</span>
-                            <span className="flex items-center"><span className="w-3 h-3 rounded-full bg-purple-600 mr-2"></span>Valet Parking</span>
-                        </div>
-                    </div>
+                            </div>
 
-                    <div className="bg-blue-50 rounded-2xl p-6 shadow-xl border border-blue-200">
-                        <h2 className="text-2xl font-bold text-blue-900 mb-4">{t.suggestedParkingLocations}</h2>
-                        <h3 className="text-xl font-semibold text-amber-600 mb-3">{t.bestParkingFor(location || t.currentLocation)}</h3>
-                        <div className="space-y-3 mb-6">
-                            {suggestedLocations.map((loc, index) => (
-                                <div 
-                                    key={index} 
-                                    className="flex justify-between items-center bg-blue-100 p-3 rounded-xl shadow-md cursor-pointer hover:bg-blue-200 transition duration-300"
-                                    onClick={() => showModal(loc.name, `Details for ${loc.name}: Distance ${loc.distance}, Availability ${loc.availability}. Type: ${loc.type}. ${loc.spots ? t.spotsAvailable(loc.spots) : ''}`)}
+                            {/* Family Sharing */}
+                            <div className="bg-green-50 p-6 rounded-xl border border-green-200 shadow-sm">
+                                <h3 className="text-2xl font-bold text-green-700 mb-3">{t.familySharing}</h3>
+                                <p className="text-gray-700 mb-4">{t.shareSubscription}</p>
+                                <button
+                                    onClick={() => alert(t.familySharingInitiated)}
+                                    className="bg-green-600 text-white font-bold py-2 px-5 rounded-xl hover:bg-green-700 transition duration-300 shadow-md"
                                 >
-                                    <p className="font-bold text-blue-900">{loc.name}</p>
-                                    <div className="text-right">
-                                        <p className="text-sm text-blue-700">{loc.distance} - {loc.availability}</p>
-                                        <p className="text-xs text-blue-500">{loc.type} {loc.spots ? `(${loc.spots})` : ''}</p>
-                                    </div>
-                                </div>
-                            ))}
-                        </div>
-
-                        <h3 className="text-xl font-semibold text-amber-600 mb-3">{t.regularUsedLocations}</h3>
-                        <div className="space-y-3">
-                            {regularUsedLocations.map((loc, index) => (
-                                <div key={index} className="flex justify-between items-center bg-blue-100 p-3 rounded-xl shadow-md">
-                                    <p className="font-bold text-blue-900">{loc.name}</p>
-                                    <p className="text-sm text-blue-700">Last used: {loc.lastUsed}</p>
-                                </div>
-                            ))}
-                        </div>
-                    </div>
-                </div>
-            );
-        };
-
-        // --- Booking Screens for Services ---
-        const CarWashBookingScreen = ({ onBookingComplete, showModal }) => {
-            const { appLanguage } = useContext(LanguageContext);
-            const t = translations[appLanguage];
-            const [date, setDate] = useState('');
-            const [time, setTime] = useState('');
-
-            const handleSubmit = (e) => {
-                e.preventDefault();
-                if (date && time) {
-                    showModal(t.bookingScheduled, `Car Wash scheduled for ${date} at ${time}.`);
-                    onBookingComplete({ type: 'Car Wash', date, time, status: t.confirmed, amount: 150 });
-                } else {
-                    showModal(t.selectionRequired, t.pleaseFillAllFields);
-                }
-            };
-
-            return (
-                <div className="p-8 space-y-8 bg-white text-blue-900">
-                    <div className="bg-blue-50 rounded-2xl p-6 shadow-xl border border-blue-200">
-                        <h2 className="text-2xl font-bold text-amber-600 mb-4">{t.scheduleCarWash}</h2>
-                        <form onSubmit={handleSubmit} className="space-y-4">
-                            <div>
-                                <label htmlFor="wash-date" className="block text-blue-800 text-sm font-bold mb-2">{t.date}</label>
-                                <input type="date" id="wash-date" value={date} onChange={(e) => setDate(e.target.value)} className="w-full p-3 rounded-xl bg-blue-100 text-blue-900 focus:outline-none focus:ring-2 focus:ring-amber-400" />
-                            </div>
-                            <div>
-                                <label htmlFor="wash-time" className="block text-blue-800 text-sm font-bold mb-2">{t.timeFrom}</label>
-                                <input type="time" id="wash-time" value={time} onChange={(e) => setTime(e.target.value)} className="w-full p-3 rounded-xl bg-blue-100 text-blue-900 focus:outline-none focus:ring-2 focus:ring-amber-400" />
-                            </div>
-                            <button type="submit" className="w-full bg-pink-600 text-white font-bold py-3 px-6 rounded-xl hover:bg-pink-700 transition duration-300 shadow-lg">
-                                {t.scheduleBooking}
-                            </button>
-                        </form>
-                    </div>
-                </div>
-            );
-        };
-
-        const MaintenanceBookingScreen = ({ onBookingComplete, showModal }) => {
-            const { appLanguage } = useContext(LanguageContext);
-            const t = translations[appLanguage];
-            const [carModel, setCarModel] = useState('');
-            const [carCompany, setCarCompany] = useState('');
-            const [maintenanceType, setMaintenanceType] = useState('');
-            const [date, setDate] = useState('');
-            const [time, setTime] = useState('');
-
-            const handleSubmit = (e) => {
-                e.preventDefault();
-                if (carModel && carCompany && maintenanceType && date && time) {
-                    showModal(t.bookingScheduled, `${maintenanceType} for ${carCompany} ${carModel} scheduled for ${date} at ${time}.`);
-                    onBookingComplete({ type: maintenanceType, car: `${carCompany} ${carModel}`, date, time, status: t.confirmed, amount: 500 }); // Mock amount
-                } else {
-                    showModal(t.selectionRequired, t.pleaseFillAllFields);
-                }
-            };
-
-            return (
-                <div className="p-8 space-y-8 bg-white text-blue-900">
-                    <div className="bg-blue-50 rounded-2xl p-6 shadow-xl border border-blue-200">
-                        <h2 className="text-2xl font-bold text-amber-600 mb-4">{t.vehicleMaintenance}</h2>
-                        <form onSubmit={handleSubmit} className="space-y-4">
-                            <div>
-                                <label htmlFor="car-company" className="block text-blue-800 text-sm font-bold mb-2">{t.carCompany}</label>
-                                <input type="text" id="car-company" value={carCompany} onChange={(e) => setCarCompany(e.target.value)} className="w-full p-3 rounded-xl bg-blue-100 text-blue-900 focus:outline-none focus:ring-2 focus:ring-amber-400" placeholder="e.g., Maruti Suzuki" />
-                            </div>
-                            <div>
-                                <label htmlFor="car-model" className="block text-blue-800 text-sm font-bold mb-2">{t.carModel}</label>
-                                <input type="text" id="car-model" value={carModel} onChange={(e) => setCarModel(e.target.value)} className="w-full p-3 rounded-xl bg-blue-100 text-blue-900 focus:outline-none focus:ring-2 focus:ring-amber-400" placeholder="e.g., Swift Dzire" />
-                            </div>
-                            <div>
-                                <label htmlFor="maintenance-type" className="block text-blue-800 text-sm font-bold mb-2">{t.maintenanceType}</label>
-                                <select id="maintenance-type" value={maintenanceType} onChange={(e) => setMaintenanceType(e.target.value)} className="w-full p-3 rounded-xl bg-blue-100 text-blue-900 focus:outline-none focus:ring-2 focus:ring-amber-400">
-                                    <option value="">{t.selectMaintenance}</option>
-                                    <option value="Oil Change">{t.oilChange}</option>
-                                    <option value="Tire Rotation">{t.tireRotation}</option>
-                                    <option value="Brake Inspection">{t.brakeInspection}</option>
-                                    <option value="Full Service">{t.fullService}</option>
-                                    <option value="Other">{t.other}</option>
-                                </select>
-                            </div>
-                            <div>
-                                <label htmlFor="maintenance-date" className="block text-blue-800 text-sm font-bold mb-2">{t.date}</label>
-                                <input type="date" id="maintenance-date" value={date} onChange={(e) => setDate(e.target.value)} className="w-full p-3 rounded-xl bg-blue-100 text-blue-900 focus:outline-none focus:ring-2 focus:ring-amber-400" />
-                            </div>
-                            <div>
-                                <label htmlFor="maintenance-time" className="block text-blue-800 text-sm font-bold mb-2">{t.timeFrom}</label>
-                                <input type="time" id="maintenance-time" value={time} onChange={(e) => setTime(e.target.value)} className="w-full p-3 rounded-xl bg-blue-100 text-blue-900 focus:outline-none focus:ring-2 focus:ring-amber-400" />
-                            </div>
-                            <button type="submit" className="w-full bg-pink-600 text-white font-bold py-3 px-6 rounded-xl hover:bg-pink-700 transition duration-300 shadow-lg">
-                                {t.scheduleBooking}
-                            </button>
-                        </form>
-                    </div>
-                </div>
-            );
-        };
-
-        const ValetBookingScreen = ({ onBookingComplete, showModal }) => {
-            const { appLanguage } = useContext(LanguageContext);
-            const t = translations[appLanguage];
-            const [pickupLocation, setPickupLocation] = useState('');
-            const [dropoffLocation, setDropoffLocation] = useState('');
-            const [date, setDate] = useState('');
-            const [time, setTime] = useState('');
-
-            const handleSubmit = (e) => {
-                e.preventDefault();
-                if (pickupLocation && dropoffLocation && date && time) {
-                    showModal(t.valetBooked, `Valet service booked from ${pickupLocation} to ${dropoffLocation} on ${date} at ${time}.`);
-                    onBookingComplete({ type: 'Valet Service', pickup: pickupLocation, dropoff: dropoffLocation, date, time, status: t.confirmed, amount: 250 }); // Mock amount
-                } else {
-                    showModal(t.selectionRequired, t.pleaseFillAllFields);
-                }
-            };
-
-            return (
-                <div className="p-8 space-y-8 bg-white text-blue-900">
-                    <div className="bg-blue-50 rounded-2xl p-6 shadow-xl border border-blue-200">
-                        <h2 className="text-2xl font-bold text-amber-600 mb-4">{t.valetBooking}</h2>
-                        <form onSubmit={handleSubmit} className="space-y-4">
-                            <div>
-                                <label htmlFor="pickup-location" className="block text-blue-800 text-sm font-bold mb-2">{t.pickUpLocation}</label>
-                                <input type="text" id="pickup-location" value={pickupLocation} onChange={(e) => setPickupLocation(e.target.value)} className="w-full p-3 rounded-xl bg-blue-100 text-blue-900 focus:outline-none focus:ring-2 focus:ring-amber-400" placeholder="e.g., Office entrance" />
-                            </div>
-                            <div>
-                                <label htmlFor="dropoff-location" className="block text-blue-800 text-sm font-bold mb-2">{t.dropOffLocation}</label>
-                                <input type="text" id="dropoff-location" value={dropoffLocation} onChange={(e) => setDropoffLocation(e.target.value)} className="w-full p-3 rounded-xl bg-blue-100 text-blue-900 focus:outline-none focus:ring-2 focus:ring-amber-400" placeholder="e.g., Home address" />
-                            </div>
-                            <div>
-                                <label htmlFor="valet-date" className="block text-blue-800 text-sm font-bold mb-2">{t.date}</label>
-                                <input type="date" id="valet-date" value={date} onChange={(e) => setDate(e.target.value)} className="w-full p-3 rounded-xl bg-blue-100 text-blue-900 focus:outline-none focus:ring-2 focus:ring-amber-400" />
-                            </div>
-                            <div>
-                                <label htmlFor="valet-time" className="block text-blue-800 text-sm font-bold mb-2">{t.timeFrom}</label>
-                                <input type="time" id="valet-time" value={time} onChange={(e) => setTime(e.target.value)} className="w-full p-3 rounded-xl bg-blue-100 text-blue-900 focus:outline-none focus:ring-2 focus:ring-amber-400" />
-                            </div>
-                            <button type="submit" className="w-full bg-pink-600 text-white font-bold py-3 px-6 rounded-xl hover:bg-pink-700 transition duration-300 shadow-lg">
-                                {t.scheduleBooking}
-                            </button>
-                        </form>
-                    </div>
-                </div>
-            );
-        };
-
-
-        // Services Screen (New/Enhanced)
-        const ServicesScreen = ({ showModal, onNavigate, onAddServiceBooking }) => {
-            const { appLanguage } = useContext(LanguageContext);
-            const t = translations[appLanguage];
-
-            const handleJumpStart = () => {
-                showModal(t.gpsRequired, t.enableGpsMessage, 
-                    <button 
-                        onClick={() => { 
-                            showModal(t.gpsEnabled, "GPS location enabled. Sending request..."); 
-                            // Simulate sending jump start request
-                            onAddServiceBooking({ type: 'Jump Start', date: new Date().toLocaleDateString(), time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }), status: t.confirmed, amount: 0 });
-                        }} 
-                        className="mt-4 bg-green-600 text-white font-bold py-2 px-5 rounded-xl hover:bg-green-700 transition duration-300"
-                    >
-                        {t.enableGps}
-                    </button>
-                );
-            };
-
-            return (
-                <div className="p-8 space-y-8 bg-white text-blue-900">
-                    {/* Main Add-on Services */}
-                    <div className="bg-blue-50 rounded-2xl p-6 shadow-xl border border-blue-200">
-                        <h2 className="text-2xl font-bold text-amber-600 mb-4">{t.services}</h2>
-                        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                            <div className="bg-blue-100 rounded-xl shadow-md p-4 flex flex-col items-center text-center">
-                                <img 
-                                    src="https://placehold.co/120x80/6a0dad/ffffff?text=Car+Wash" 
-                                    alt="Car Wash" 
-                                    className="rounded-lg mb-3"
-                                    onError={(e) => {e.target.onerror=null;e.target.src='https://placehold.co/120x80/6a0dad/ffffff?text=Image+Error';}}
-                                />
-                                <h3 className="text-xl font-bold text-blue-900 mb-1">{t.carWashDetailing}</h3>
-                                <p className="text-blue-700 text-sm mb-3">{t.getCarSparkling}</p>
-                                <button 
-                                    onClick={() => onNavigate('carWashBooking')} 
-                                    className="bg-purple-600 text-white font-bold py-2 px-4 rounded-lg hover:bg-purple-700 transition duration-300"
-                                    aria-label={t.scheduleService}
-                                >
-                                    {t.scheduleService}
+                                    {t.manageFamily}
                                 </button>
                             </div>
-                            <div className="bg-blue-100 rounded-xl shadow-md p-4 flex flex-col items-center text-center">
-                                <img 
-                                    src="https://placehold.co/120x80/007bff/ffffff?text=EV+Charging" 
-                                    alt="EV Charging" 
-                                    className="rounded-lg mb-3"
-                                    onError={(e) => {e.target.onerror=null;e.target.src='https://placehold.co/120x80/007bff/ffffff?text=Image+Error';}}
-                                />
-                                <h3 className="text-xl font-bold text-blue-900 mb-1">{t.evCharging}</h3>
-                                <p className="text-blue-700 text-sm mb-3">{t.findBookCharging}</p>
-                                <button 
-                                    onClick={() => onNavigate('home')} // Navigate to home map
-                                    className="bg-blue-600 text-white font-bold py-2 px-4 rounded-lg hover:bg-blue-700 transition duration-300"
-                                    aria-label={t.locateCharging}
-                                >
-                                    {t.locateCharging}
-                                </button>
-                            </div>
-                            <div className="bg-blue-100 rounded-xl shadow-md p-4 flex flex-col items-center text-center">
-                                <img 
-                                    src="https://placehold.co/120x80/dc3545/ffffff?text=Maintenance" 
-                                    alt="Vehicle Maintenance" 
-                                    className="rounded-lg mb-3"
-                                    onError={(e) => {e.target.onerror=null;e.target.src='https://placehold.co/120x80/dc3545/ffffff?text=Image+Error';}}
-                                />
-                                <h3 className="text-xl font-bold text-blue-900 mb-1">{t.vehicleMaintenance}</h3>
-                                <p className="text-blue-700 text-sm mb-3">{t.minorServicing}</p>
-                                <button 
-                                    onClick={() => onNavigate('maintenanceBooking')} 
-                                    className="bg-red-600 text-white font-bold py-2 px-4 rounded-lg hover:bg-red-700 transition duration-300"
-                                    aria-label={t.scheduleService}
-                                >
-                                    {t.scheduleService}
-                                </button>
-                            </div>
-                            <div className="bg-blue-100 rounded-xl shadow-md p-4 flex flex-col items-center text-center">
-                                <img 
-                                    src="https://placehold.co/120x80/ffc107/000000?text=Valet+Parking" 
-                                    alt="Valet Parking" 
-                                    className="rounded-lg mb-3"
-                                    onError={(e) => {e.target.onerror=null;e.target.src='https://placehold.co/120x80/ffc107/000000?text=Image+Error';}}
-                                />
-                                <h3 className="text-xl font-bold text-blue-900 mb-1">{t.valetParking}</h3>
-                                <p className="text-blue-700 text-sm mb-3">{t.hassleFreeParking}</p>
-                                <button 
-                                    onClick={() => onNavigate('valetBooking')} 
-                                    className="bg-amber-600 text-blue-900 font-bold py-2 px-4 rounded-lg hover:bg-amber-700 transition duration-300"
-                                    aria-label={t.bookValetService}
-                                >
-                                    {t.bookValetService}
-                                </button>
-                            </div>
-                        </div>
-                    </div>
 
-                    {/* Additional Options/Features */}
-                    <div className="bg-blue-50 rounded-2xl p-6 shadow-xl border border-blue-200">
-                        <h2 className="text-2xl font-bold text-blue-900 mb-4">Additional SmartPark Features</h2>
-                        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                            <div 
-                                className="bg-blue-100 rounded-xl shadow-md p-4 cursor-pointer hover:bg-blue-200 transition duration-300"
-                                onClick={() => showModal(t.priorityBooking, t.premiumBenefits)}
-                            >
-                                <h3 className="text-xl font-bold text-amber-600 mb-2">{t.priorityBooking}</h3>
-                                <p className="text-blue-700 text-sm">{t.premiumBenefits}</p>
-                            </div>
-                            <div 
-                                className="bg-blue-100 rounded-xl shadow-md p-4 cursor-pointer hover:bg-blue-200 transition duration-300"
-                                onClick={() => showModal(t.dynamicPricing, t.pricingAdjusts)}
-                            >
-                                <h3 className="text-xl font-bold text-amber-600 mb-2">{t.dynamicPricing}</h3>
-                                <p className="text-blue-700 text-sm">{t.pricingAdjusts}</p>
-                            </div>
-                            <div 
-                                className="bg-blue-100 rounded-xl shadow-md p-4 cursor-pointer hover:bg-blue-200 transition duration-300"
-                                onClick={() => showModal(t.corporateBilling, t.streamlineExpenses)}
-                            >
-                                <h3 className="text-xl font-bold text-amber-600 mb-2">{t.corporateBillingBenefits}</h3>
-                                <p className="text-blue-700 text-sm">{t.streamlineExpenses}</p>
-                            </div>
-                            <div className="bg-blue-100 rounded-xl shadow-md p-4">
-                                <h3 className="text-xl font-bold text-amber-600 mb-2">{t.emergencyServices}</h3>
-                                <p className="text-blue-700 text-sm mb-3">{t.requestAssistance}</p>
-                                <button 
-                                    onClick={handleJumpStart} 
-                                    className="bg-red-600 text-white font-bold py-2 px-4 rounded-lg hover:bg-red-700 transition duration-300"
-                                    aria-label={t.requestJumpStart}
+                            {/* Emergency Services */}
+                            <div className="bg-red-50 p-6 rounded-xl border border-red-200 shadow-sm">
+                                <h3 className="text-2xl font-bold text-red-700 mb-3">{t.emergencyServices}</h3>
+                                <p className="text-gray-700 mb-4">{t.requestAssistance}</p>
+                                <button
+                                    onClick={() => alert(t.jumpStartRequested)}
+                                    className="bg-red-600 text-white font-bold py-2 px-5 rounded-xl hover:bg-red-700 transition duration-300 shadow-md"
                                 >
                                     {t.requestJumpStart}
                                 </button>
                             </div>
+
+                            {/* Data & Privacy (GDPR) */}
+                            <div className="bg-purple-50 p-6 rounded-xl border border-purple-200 shadow-sm">
+                                <h3 className="text-2xl font-bold text-purple-700 mb-3">{t.dataPrivacy}</h3>
+                                <p className="text-gray-700 mb-4">{t.exerciseRightToDelete}</p>
+                                <button
+                                    onClick={() => {
+                                        if (window.confirm(t.areYouSureDeleteAccount + "\n\n" + t.gdprDataRemoval)) {
+                                            alert(t.accountDeletedMessage);
+                                            onBack(); // Go back after deletion
+                                        }
+                                    }}
+                                    className="bg-purple-600 text-white font-bold py-2 px-5 rounded-xl hover:bg-purple-700 transition duration-300 shadow-md"
+                                >
+                                    {t.deleteMyAccount}
+                                </button>
+                            </div>
+                        </div>
+
+                        <button
+                            onClick={onBack}
+                            className="mt-8 bg-gray-500 text-white font-bold py-3 px-6 rounded-xl hover:bg-gray-600 transition duration-300 w-full shadow-lg"
+                        >
+                            {t.backToUserTypeSelection} {/* Reusing this translation key for "Back" */}
+                        </button>
+                    </div>
+                </div>
+            );
+        };
+
+        // --- Customer App Components (Placeholder for brevity, you already have these) ---
+        const CustomerApp = ({ onLogout, onBackToUserTypeSelection }) => {
+            const { appLanguage } = useContext(LanguageContext);
+            const t = translations[appLanguage];
+            const [view, setView] = useState('findParking'); // 'findParking', 'bookingSummary', 'payment', 'invoice', 'qrCode', 'myBookings', 'prebook'
+            const [selectedSlot, setSelectedSlot] = useState(null);
+            const [includeCarWash, setIncludeCarWash] = useState(false);
+            const [bookingDetails, setBookingDetails] = useState(null);
+            const [invoice, setInvoice] = useState(null);
+            const [locationSearch, setLocationSearch] = useState('');
+            const [showSearchModal, setShowSearchModal] = useState(false);
+            const [showGpsModal, setShowGpsModal] = useState(false);
+            const [isGpsEnabled, setIsGpsEnabled] = useState(false);
+
+            const handleSearch = () => {
+                if (!locationSearch) {
+                    setShowSearchModal(true);
+                    return;
+                }
+                alert(t.searchingForParking(locationSearch));
+                // Simulate search results
+                // For a real app, this would involve an API call
+                const simulatedSpots = [
+                    { id: 'spotA1', name: 'Spot A1 - Level 1', type: 'standard', price: 50, distance: '100m', availability: 'High' },
+                    { id: 'spotB3', name: 'Spot B3 - Level 2 (Premium)', type: 'premium', price: 100, distance: '150m', availability: 'Medium' },
+                    { id: 'spotC5', name: 'Spot C5 - EV Charging', type: 'ev-charging', price: 70, distance: '200m', availability: 'Low' },
+                    { id: 'spotD2', name: 'Spot D2 - Valet', type: 'valet', price: 120, distance: '50m', availability: 'High' }
+                ];
+                // In a real app, you would set state with actual results
+                // For now, we'll just proceed to slot selection after a simulated search
+                setView('selectSlot');
+            };
+
+            const handleSlotSelection = (slot) => {
+                setSelectedSlot(slot);
+                alert(t.youHaveSelected(slot.name, slot.price));
+            };
+
+            const handleProceedToBooking = () => {
+                if (!selectedSlot) {
+                    alert(t.pleaseSelectSlot);
+                    return;
+                }
+                const basePrice = selectedSlot.price;
+                const carWashPrice = includeCarWash ? 150 : 0;
+                const localTaxRate = 18; // Example tax rate
+                const taxableAmount = basePrice + carWashPrice;
+                const taxAmount = (taxableAmount * localTaxRate) / 100;
+                const totalAmount = taxableAmount + taxAmount;
+
+                setBookingDetails({
+                    slot: selectedSlot,
+                    basePrice: basePrice,
+                    carWash: includeCarWash,
+                    carWashPrice: carWashPrice,
+                    localTaxRate: localTaxRate,
+                    taxAmount: taxAmount,
+                    totalAmount: totalAmount
+                });
+                setView('bookingSummary');
+            };
+
+            const handleConfirmBooking = () => {
+                alert(t.bookingConfirmed);
+                setView('payment');
+            };
+
+            const handlePayment = (method) => {
+                if (!bookingDetails) return;
+                alert(t.processingPayment);
+                setTimeout(() => {
+                    if (method === 'upi') {
+                        alert(t.simulatingUpiPayment);
+                        alert(t.paymentSuccessful);
+                        alert(t.paidViaUPI(bookingDetails.totalAmount));
+                    } else if (method === 'corporate') {
+                        alert(t.requestSentToCorporate);
+                    }
+                    const newInvoice = {
+                        id: generateId(),
+                        date: new Date().toLocaleDateString(),
+                        service: bookingDetails.slot.name,
+                        addOn: bookingDetails.carWash ? t.carWash : t.none,
+                        basePrice: bookingDetails.basePrice,
+                        carWashPrice: bookingDetails.carWashPrice,
+                        taxableAmount: bookingDetails.basePrice + bookingDetails.carWashPrice,
+                        gstRate: bookingDetails.localTaxRate,
+                        gstAmount: bookingDetails.taxAmount,
+                        totalAmount: bookingDetails.totalAmount
+                    };
+                    setInvoice(newInvoice);
+                    setView('qrCode');
+                }, 1500);
+            };
+
+            const handlePrebook = () => {
+                alert(t.prebookSubmitted);
+                setView('findParking'); // Go back to main search after pre-booking
+            };
+
+            const handleMaintenanceBooking = () => {
+                alert(t.bookingScheduled);
+                setView('findParking');
+            };
+
+            const handleValetBooking = () => {
+                if (!isGpsEnabled) {
+                    setShowGpsModal(true);
+                    return;
+                }
+                alert(t.valetBooked);
+                setView('findParking');
+            };
+
+            const enableGps = () => {
+                setIsGpsEnabled(true);
+                setShowGpsModal(false);
+                alert(t.gpsEnabled);
+            };
+
+            const renderCustomerView = () => {
+                switch (view) {
+                    case 'findParking':
+                        return (
+                            <div className="flex flex-col items-center justify-center min-h-screen bg-gradient-to-br from-blue-100 to-indigo-200 p-4">
+                                <Header onNavigate={setView} onLogout={onLogout} />
+                                <div className="flex-grow flex flex-col items-center justify-center w-full max-w-4xl px-4 py-8">
+                                    <div className="bg-white p-8 rounded-2xl shadow-xl w-full transform transition-all duration-300 scale-100 opacity-100">
+                                        <h2 className="text-4xl font-extrabold text-blue-800 mb-8 text-center">{t.findYourParkingSpot}</h2>
+                                        
+                                        <div className="mb-6 space-y-4">
+                                            <select
+                                                className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-gray-700"
+                                            >
+                                                <option value="">{t.selectCity}</option>
+                                                <option value="bengaluru">Bengaluru</option>
+                                                <option value="mumbai">Mumbai</option>
+                                                <option value="delhi">{t.comingSoon}</option>
+                                            </select>
+                                            <input
+                                                type="text"
+                                                placeholder={t.enterLocation}
+                                                className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                                                value={locationSearch}
+                                                onChange={(e) => setLocationSearch(e.target.value)}
+                                            />
+                                        </div>
+                                        <button
+                                            onClick={handleSearch}
+                                            className="w-full bg-blue-600 text-white font-bold py-3 px-6 rounded-xl hover:bg-blue-700 transition duration-300 shadow-lg"
+                                        >
+                                            {t.search}
+                                        </button>
+                                        <p className="text-center text-gray-500 text-sm mt-6">{t.poweredByAI}</p>
+                                    </div>
+
+                                    {/* Suggested Parking Locations */}
+                                    <div className="bg-white p-8 rounded-2xl shadow-xl w-full max-w-4xl mt-8">
+                                        <h3 className="text-3xl font-extrabold text-blue-800 mb-6">{t.suggestedParkingLocations}</h3>
+                                        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                            {/* Location Card 1 */}
+                                            <div className="bg-gray-50 p-6 rounded-xl border border-gray-200 shadow-sm flex items-center justify-between">
+                                                <div>
+                                                    <p className="text-lg font-semibold text-gray-800">Phoenix Mall, Whitefield</p>
+                                                    <p className="text-sm text-gray-500">{t.distance}: 2.5 km</p>
+                                                    <p className="text-sm font-medium text-green-600">{t.availability}: {t.spotsAvailable(12)}</p>
+                                                </div>
+                                                <button onClick={() => alert(t.bestParkingFor('Phoenix Mall'))} className="bg-blue-500 text-white py-2 px-4 rounded-lg text-sm hover:bg-blue-600 transition duration-300">
+                                                    {t.moreDetails}
+                                                </button>
+                                            </div>
+                                            {/* Location Card 2 */}
+                                            <div className="bg-gray-50 p-6 rounded-xl border border-gray-200 shadow-sm flex items-center justify-between">
+                                                <div>
+                                                    <p className="text-lg font-semibold text-gray-800">MG Road Metro Station</p>
+                                                    <p className="text-sm text-gray-500">{t.distance}: 5.1 km</p>
+                                                    <p className="text-sm font-medium text-orange-600">{t.availability}: {t.fillingFast}</p>
+                                                </div>
+                                                <button onClick={() => alert(t.bestParkingFor('MG Road Metro Station'))} className="bg-blue-500 text-white py-2 px-4 rounded-lg text-sm hover:bg-blue-600 transition duration-300">
+                                                    {t.moreDetails}
+                                                </button>
+                                            </div>
+                                        </div>
+                                        <h3 className="text-3xl font-extrabold text-blue-800 mb-6 mt-8">{t.services}</h3>
+                                        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                            <div className="bg-indigo-50 p-6 rounded-xl border border-indigo-200 shadow-sm">
+                                                <h4 className="text-xl font-bold text-indigo-700 mb-2">{t.carWashDetailing}</h4>
+                                                <p className="text-gray-700 mb-4">{t.getCarSparkling}</p>
+                                                <button onClick={() => alert(t.scheduleService)} className="bg-indigo-600 text-white py-2 px-4 rounded-lg hover:bg-indigo-700 transition duration-300">
+                                                    {t.scheduleService}
+                                                </button>
+                                            </div>
+                                            <div className="bg-teal-50 p-6 rounded-xl border border-teal-200 shadow-sm">
+                                                <h4 className="text-xl font-bold text-teal-700 mb-2">{t.evCharging}</h4>
+                                                <p className="text-gray-700 mb-4">{t.findBookCharging}</p>
+                                                <button onClick={() => alert(t.locateCharging)} className="bg-teal-600 text-white py-2 px-4 rounded-lg hover:bg-teal-700 transition duration-300">
+                                                    {t.locateCharging}
+                                                </button>
+                                            </div>
+                                            <div className="bg-amber-50 p-6 rounded-xl border border-amber-200 shadow-sm">
+                                                <h4 className="text-xl font-bold text-amber-700 mb-2">{t.valetParking}</h4>
+                                                <p className="text-gray-700 mb-4">{t.hassleFreeParking}</p>
+                                                <button onClick={handleValetBooking} className="bg-amber-600 text-white py-2 px-4 rounded-lg hover:bg-amber-700 transition duration-300">
+                                                    {t.bookValetService}
+                                                </button>
+                                            </div>
+                                            <div className="bg-pink-50 p-6 rounded-xl border border-pink-200 shadow-sm">
+                                                <h4 className="text-xl font-bold text-pink-700 mb-2">{t.vehicleMaintenance}</h4>
+                                                <p className="text-gray-700 mb-4">{t.minorServicing}</p>
+                                                <button onClick={handleMaintenanceBooking} className="bg-pink-600 text-white py-2 px-4 rounded-lg hover:bg-pink-700 transition duration-300">
+                                                    {t.scheduleService}
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <Modal
+                                        show={showSearchModal}
+                                        title={t.searchError}
+                                        message={t.pleaseEnterLocation}
+                                        onClose={() => setShowSearchModal(false)}
+                                    />
+                                    <Modal
+                                        show={showGpsModal}
+                                        title={t.gpsRequired}
+                                        message={t.enableGpsMessage}
+                                        onClose={() => setShowGpsModal(false)}
+                                    >
+                                        <button onClick={enableGps} className="bg-blue-600 text-white font-bold py-2 px-5 rounded-xl hover:bg-blue-700 transition duration-300">
+                                            {t.enableGps}
+                                        </button>
+                                    </Modal>
+                                </div>
+                                <Footer />
+                            </div>
+                        );
+                    case 'selectSlot':
+                        const parkingSpots = [
+                            { id: 'P1A', name: 'Premium Slot P1A', price: 120, status: t.available, type: 'premium' },
+                            { id: 'S2C', name: 'Standard Slot S2C', price: 80, status: t.available, type: 'standard' },
+                            { id: 'E3B', name: 'EV Charging E3B', price: 100, status: t.occupied, type: 'ev-charging' },
+                            { id: 'P4D', name: 'Premium Slot P4D', price: 130, status: t.available, type: 'premium' },
+                        ];
+                        return (
+                            <div className="flex flex-col items-center justify-center min-h-screen bg-gradient-to-br from-blue-100 to-indigo-200 p-4">
+                                <Header onNavigate={setView} onLogout={onLogout} />
+                                <div className="flex-grow flex flex-col items-center justify-center w-full max-w-4xl px-4 py-8">
+                                    <div className="bg-white p-8 rounded-2xl shadow-xl w-full transform transition-all duration-300 scale-100 opacity-100">
+                                        <h2 className="text-4xl font-extrabold text-blue-800 mb-8 text-center">{t.selectYourSlot}</h2>
+                                        <p className="text-center text-gray-600 mb-6">{t.pricesDynamicallyAdjusted}</p>
+                                        
+                                        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+                                            {parkingSpots.map(spot => (
+                                                <div
+                                                    key={spot.id}
+                                                    onClick={() => handleSlotSelection(spot)}
+                                                    className={`p-6 rounded-xl border-2 cursor-pointer transition-all duration-300 ${
+                                                        selectedSlot?.id === spot.id
+                                                            ? 'border-blue-600 bg-blue-50 shadow-lg'
+                                                            : 'border-gray-200 bg-gray-50 hover:border-blue-300 hover:shadow-md'
+                                                    } ${spot.status === t.occupied ? 'opacity-60 cursor-not-allowed' : ''}`}
+                                                >
+                                                    <h3 className="text-xl font-bold text-blue-700 mb-2">{spot.name}</h3>
+                                                    <p className="text-gray-800">₹{spot.price}</p>
+                                                    <p className={`font-semibold ${spot.status === t.available ? 'text-green-600' : 'text-red-600'}`}>
+                                                        {spot.status}
+                                                    </p>
+                                                </div>
+                                            ))}
+                                        </div>
+
+                                        <div className="flex items-center mb-6">
+                                            <input
+                                                type="checkbox"
+                                                id="carWash"
+                                                checked={includeCarWash}
+                                                onChange={(e) => setIncludeCarWash(e.target.checked)}
+                                                className="mr-3 h-5 w-5 text-blue-600 rounded"
+                                            />
+                                            <label htmlFor="carWash" className="text-lg text-gray-700">{t.carWashAddon}</label>
+                                        </div>
+
+                                        <button
+                                            onClick={handleProceedToBooking}
+                                            className="w-full bg-green-600 text-white font-bold py-3 px-6 rounded-xl hover:bg-green-700 transition duration-300 shadow-lg"
+                                        >
+                                            {t.proceedToBooking}
+                                        </button>
+                                    </div>
+                                </div>
+                                <Footer />
+                            </div>
+                        );
+                    case 'bookingSummary':
+                        return (
+                            <div className="flex flex-col items-center justify-center min-h-screen bg-gradient-to-br from-blue-100 to-indigo-200 p-4">
+                                <Header onNavigate={setView} onLogout={onLogout} />
+                                <div className="flex-grow flex flex-col items-center justify-center w-full max-w-4xl px-4 py-8">
+                                    <div className="bg-white p-8 rounded-2xl shadow-xl w-full transform transition-all duration-300 scale-100 opacity-100">
+                                        <h2 className="text-4xl font-extrabold text-blue-800 mb-8 text-center">{t.bookingSummary}</h2>
+                                        
+                                        {bookingDetails ? (
+                                            <div className="space-y-4 text-lg text-gray-700 mb-8">
+                                                <p><strong>{t.parkingSlot}:</strong> {bookingDetails.slot.name}</p>
+                                                <p><strong>{t.basePrice}:</strong> ₹{bookingDetails.basePrice}</p>
+                                                <p><strong>{t.carWash}:</strong> {bookingDetails.carWash ? `₹${bookingDetails.carWashPrice}` : 'No'}</p>
+                                                <p><strong>{t.localParkingTax(bookingDetails.localTaxRate)}</strong> ₹{bookingDetails.taxAmount.toFixed(2)}</p>
+                                                <p className="text-2xl font-bold text-blue-800"><strong>{t.totalAmount}:</strong> ₹{bookingDetails.totalAmount.toFixed(2)}</p>
+                                            </div>
+                                        ) : (
+                                            <p className="text-center text-red-600 text-lg mb-8">{t.noBookingDetails}</p>
+                                        )}
+
+                                        <button
+                                            onClick={handleConfirmBooking}
+                                            disabled={!bookingDetails}
+                                            className="w-full bg-blue-600 text-white font-bold py-3 px-6 rounded-xl hover:bg-blue-700 transition duration-300 shadow-lg disabled:opacity-50 disabled:cursor-not-allowed"
+                                        >
+                                            {t.confirmBooking}
+                                        </button>
+                                        <button
+                                            onClick={() => setView('selectSlot')}
+                                            className="w-full mt-4 bg-gray-500 text-white font-bold py-3 px-6 rounded-xl hover:bg-gray-600 transition duration-300 shadow-lg"
+                                        >
+                                            {t.back}
+                                        </button>
+                                    </div>
+                                </div>
+                                <Footer />
+                            </div>
+                        );
+                    case 'payment':
+                        return (
+                            <div className="flex flex-col items-center justify-center min-h-screen bg-gradient-to-br from-blue-100 to-indigo-200 p-4">
+                                <Header onNavigate={setView} onLogout={onLogout} />
+                                <div className="flex-grow flex flex-col items-center justify-center w-full max-w-4xl px-4 py-8">
+                                    <div className="bg-white p-8 rounded-2xl shadow-xl w-full transform transition-all duration-300 scale-100 opacity-100">
+                                        <h2 className="text-4xl font-extrabold text-blue-800 mb-8 text-center">{t.completePayment}</h2>
+                                        
+                                        {bookingDetails && (
+                                            <p className="text-center text-3xl font-bold text-green-700 mb-8">{t.amountDue} ₹{bookingDetails.totalAmount.toFixed(2)}</p>
+                                        )}
+
+                                        <div className="space-y-4 mb-8">
+                                            <button
+                                                onClick={() => handlePayment('upi')}
+                                                className="w-full bg-green-500 text-white font-bold py-4 px-6 rounded-xl hover:bg-green-600 transition duration-300 shadow-lg flex items-center justify-center space-x-3"
+                                            >
+                                                <img src="https://upload.wikimedia.org/wikipedia/commons/e/e1/UPI-Logo-Vector.svg" alt="UPI Logo" className="h-8" />
+                                                <span>{t.payWithUPI}</span>
+                                            </button>
+                                            <button
+                                                onClick={() => handlePayment('corporate')}
+                                                className="w-full bg-purple-600 text-white font-bold py-4 px-6 rounded-xl hover:bg-purple-700 transition duration-300 shadow-lg"
+                                            >
+                                                {t.corporateBilling}
+                                            </button>
+                                        </div>
+                                        <p className="text-center text-gray-500 text-sm mt-4">{t.paymentProcessedSecurely}</p>
+                                    </div>
+                                </div>
+                                <Footer />
+                            </div>
+                        );
+                    case 'qrCode':
+                        return (
+                            <div className="flex flex-col items-center justify-center min-h-screen bg-gradient-to-br from-blue-100 to-indigo-200 p-4">
+                                <Header onNavigate={setView} onLogout={onLogout} />
+                                <div className="flex-grow flex flex-col items-center justify-center w-full max-w-4xl px-4 py-8">
+                                    <div className="bg-white p-8 rounded-2xl shadow-xl w-full transform transition-all duration-300 scale-100 opacity-100">
+                                        <h2 className="text-4xl font-extrabold text-blue-800 mb-8 text-center">{t.qrCheckinCode}</h2>
+                                        <p className="text-center text-gray-600 mb-8">{t.scanCodeForEntry}</p>
+                                        <div className="flex justify-center mb-8">
+                                            {/* Placeholder for QR Code - In a real app, generate dynamically */}
+                                            <img src="https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=SmartPark_Booking_QR_CODE_12345" alt="QR Code" className="w-64 h-64 border border-gray-300 rounded-lg" />
+                                        </div>
+                                        <button
+                                            onClick={() => setView('invoice')}
+                                            className="w-full bg-blue-600 text-white font-bold py-3 px-6 rounded-xl hover:bg-blue-700 transition duration-300 shadow-lg"
+                                        >
+                                            {t.invoiceDetails}
+                                        </button>
+                                        <button
+                                            onClick={() => setView('findParking')}
+                                            className="w-full mt-4 bg-green-600 text-white font-bold py-3 px-6 rounded-xl hover:bg-green-700 transition duration-300 shadow-lg"
+                                        >
+                                            {t.startNewBooking}
+                                        </button>
+                                    </div>
+                                </div>
+                                <Footer />
+                            </div>
+                        );
+                    case 'invoice':
+                        return (
+                            <div className="flex flex-col items-center justify-center min-h-screen bg-gradient-to-br from-blue-100 to-indigo-200 p-4">
+                                <Header onNavigate={setView} onLogout={onLogout} />
+                                <div className="flex-grow flex flex-col items-center justify-center w-full max-w-4xl px-4 py-8">
+                                    <div className="bg-white p-8 rounded-2xl shadow-xl w-full transform transition-all duration-300 scale-100 opacity-100">
+                                        <h2 className="text-4xl font-extrabold text-blue-800 mb-8 text-center">{t.invoiceDetails}</h2>
+                                        {invoice ? (
+                                            <div className="space-y-3 text-lg text-gray-700 mb-8">
+                                                <p><strong>{t.invoiceID}</strong> {invoice.id}</p>
+                                                <p><strong>{t.date}:</strong> {invoice.date}</p>
+                                                <p><strong>{t.service}:</strong> {invoice.service}</p>
+                                                <p><strong>{t.basePrice}:</strong> ₹{invoice.basePrice}</p>
+                                                <p><strong>{t.addOn}:</strong> {invoice.addOn}</p>
+                                                {invoice.carWashPrice > 0 && <p><strong>{t.carWash}:</strong> ₹{invoice.carWashPrice}</p>}
+                                                <p><strong>{t.taxableAmount}:</strong> ₹{invoice.taxableAmount.toFixed(2)}</p>
+                                                <p><strong>{t.gst(invoice.gstRate)}</strong> ₹{invoice.gstAmount.toFixed(2)}</p>
+                                                <p className="text-2xl font-bold text-blue-800"><strong>{t.totalAmountDue}:</strong> ₹{invoice.totalAmount.toFixed(2)}</p>
+                                            </div>
+                                        ) : (
+                                            <p className="text-center text-red-600 text-lg mb-8">{t.noInvoiceAvailable}</p>
+                                        )}
+                                        <button
+                                            onClick={() => setView('findParking')}
+                                            className="w-full bg-green-600 text-white font-bold py-3 px-6 rounded-xl hover:bg-green-700 transition duration-300 shadow-lg"
+                                        >
+                                            {t.startNewBooking}
+                                        </button>
+                                    </div>
+                                </div>
+                                <Footer />
+                            </div>
+                        );
+                    case 'myBookings':
+                        const mockBookings = [
+                            { id: 'B001', slot: 'P1A', date: '2025-06-25', status: t.completed, price: 120 },
+                            { id: 'B002', slot: 'S2C', date: '2025-06-28', status: t.confirmed, price: 80 },
+                        ];
+                        return (
+                            <div className="flex flex-col items-center min-h-screen bg-gradient-to-br from-blue-100 to-indigo-200 p-4">
+                                <Header onNavigate={setView} onLogout={onLogout} />
+                                <div className="flex-grow w-full max-w-4xl px-4 py-8">
+                                    <div className="bg-white p-8 rounded-2xl shadow-xl w-full transform transition-all duration-300 scale-100 opacity-100">
+                                        <h2 className="text-4xl font-extrabold text-blue-800 mb-8 text-center">{t.myBookings}</h2>
+                                        {mockBookings.length > 0 ? (
+                                            <div className="space-y-4">
+                                                {mockBookings.map(booking => (
+                                                    <div key={booking.id} className="bg-gray-50 p-6 rounded-xl border border-gray-200 shadow-sm flex justify-between items-center">
+                                                        <div>
+                                                            <p className="text-xl font-bold text-blue-700">{booking.slot}</p>
+                                                            <p className="text-gray-700">{t.date}: {booking.date}</p>
+                                                            <p className={`font-semibold ${booking.status === t.confirmed ? 'text-green-600' : 'text-gray-600'}`}>
+                                                                {t.status} {booking.status}
+                                                            </p>
+                                                        </div>
+                                                        <button onClick={() => alert(`${t.repeatBooking} ${booking.id}`)} className="bg-blue-500 text-white py-2 px-4 rounded-lg text-sm hover:bg-blue-600 transition duration-300">
+                                                            {t.repeatBooking}
+                                                        </button>
+                                                    </div>
+                                                ))}
+                                            </div>
+                                        ) : (
+                                            <p className="text-center text-gray-600 text-lg">{t.noBookingsYet}</p>
+                                        )}
+                                    </div>
+                                </div>
+                                <Footer />
+                            </div>
+                        );
+                    case 'prebook':
+                        const [prebookTimeFrom, setPrebookTimeFrom] = useState('');
+                        const [prebookTimeTo, setPrebookTimeTo] = useState('');
+                        return (
+                            <div className="flex flex-col items-center justify-center min-h-screen bg-gradient-to-br from-blue-100 to-indigo-200 p-4">
+                                <Header onNavigate={setView} onLogout={onLogout} />
+                                <div className="flex-grow flex flex-col items-center justify-center w-full max-w-4xl px-4 py-8">
+                                    <div className="bg-white p-8 rounded-2xl shadow-xl w-full transform transition-all duration-300 scale-100 opacity-100">
+                                        <h2 className="text-4xl font-extrabold text-blue-800 mb-8 text-center">{t.prebookAdvanced}</h2>
+                                        <div className="space-y-4 mb-6">
+                                            <input
+                                                type="datetime-local"
+                                                value={prebookTimeFrom}
+                                                onChange={(e) => setPrebookTimeFrom(e.target.value)}
+                                                className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                                            />
+                                            <input
+                                                type="datetime-local"
+                                                value={prebookTimeTo}
+                                                onChange={(e) => setPrebookTimeTo(e.target.value)}
+                                                className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                                            />
+                                        </div>
+                                        <button
+                                            onClick={handlePrebook}
+                                            className="w-full bg-blue-600 text-white font-bold py-3 px-6 rounded-xl hover:bg-blue-700 transition duration-300 shadow-lg"
+                                        >
+                                            {t.confirmPrebook}
+                                        </button>
+                                    </div>
+                                </div>
+                                <Footer />
+                            </div>
+                        );
+                    default:
+                        return null;
+                }
+            };
+
+            return (
+                <div className="flex flex-col min-h-screen">
+                    <Header onNavigate={setView} onLogout={onLogout} />
+                    {renderCustomerView()}
+                    <Footer />
+                </div>
+            );
+        };
+
+        // --- Service Provider App Components (Placeholder for brevity) ---
+        const ServiceProviderApp = ({ onLogout, onBackToUserTypeSelection }) => {
+            const { appLanguage } = useContext(LanguageContext);
+            const t = translations[appLanguage];
+            const [view, setView] = useState('dashboard'); // 'dashboard', 'manageSpots', 'bookingHistory', 'serviceRequests'
+            const [spotId, setSpotId] = useState('');
+            const [spotType, setSpotType] = useState('standard');
+            const [parkingSpots, setParkingSpots] = useState([
+                { id: 'A01', type: 'standard', status: 'occupied' },
+                { id: 'A02', type: 'premium', status: 'available' },
+                { id: 'B01', type: 'ev-charging', status: 'occupied' },
+            ]);
+            const [serviceRequests, setServiceRequests] = useState([
+                { id: 'SR001', type: 'Jump-Start', customer: 'Alice Smith', status: 'pending' },
+                { id: 'SR002', type: 'Car Wash', customer: 'Bob Johnson', status: 'pending' },
+            ]);
+
+            const addSpot = () => {
+                if (!spotId) return;
+                if (parkingSpots.some(spot => spot.id === spotId)) {
+                    alert(t.spotAlreadyExists(spotId));
+                    return;
+                }
+                setParkingSpots([...parkingSpots, { id: spotId, type: spotType, status: 'available' }]);
+                alert(t.spotAdded(spotId));
+                setSpotId('');
+            };
+
+            const removeSpot = () => {
+                if (!spotId) return;
+                if (!parkingSpots.some(spot => spot.id === spotId)) {
+                    alert(t.spotNotFound(spotId));
+                    return;
+                }
+                setParkingSpots(parkingSpots.filter(spot => spot.id !== spotId));
+                alert(t.spotRemoved(spotId));
+                setSpotId('');
+            };
+
+            const completeRequest = (id) => {
+                setServiceRequests(serviceRequests.map(req =>
+                    req.id === id ? { ...req, status: 'completed' } : req
+                ));
+                alert(t.requestCompleted);
+            };
+
+            const renderProviderView = () => {
+                switch (view) {
+                    case 'dashboard':
+                        const occupied = parkingSpots.filter(spot => spot.status === 'occupied').length;
+                        const available = parkingSpots.filter(spot => spot.status === 'available').length;
+                        return (
+                            <div className="flex flex-col items-center justify-center min-h-screen bg-gradient-to-br from-blue-100 to-indigo-200 p-4">
+                                <Header onNavigate={setView} onLogout={onLogout} />
+                                <div className="flex-grow flex flex-col items-center justify-center w-full max-w-4xl px-4 py-8">
+                                    <div className="bg-white p-8 rounded-2xl shadow-xl w-full transform transition-all duration-300 scale-100 opacity-100">
+                                        <h2 className="text-4xl font-extrabold text-blue-800 mb-8 text-center">{t.dashboard}</h2>
+                                        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+                                            <div className="bg-blue-50 p-6 rounded-xl border border-blue-200 shadow-sm text-center">
+                                                <h3 className="text-2xl font-bold text-blue-700">{t.currentOccupancy}</h3>
+                                                <p className="text-5xl font-extrabold text-blue-900 mt-4">{occupied} / {parkingSpots.length}</p>
+                                                <p className="text-gray-600 mt-2">{t.parkingSpots}</p>
+                                            </div>
+                                            <div className="bg-green-50 p-6 rounded-xl border border-green-200 shadow-sm text-center">
+                                                <h3 className="text-2xl font-bold text-green-700">{t.availableSpots}</h3>
+                                                <p className="text-5xl font-extrabold text-green-900 mt-4">{available}</p>
+                                                <p className="text-gray-600 mt-2">{t.spotsAvailable('')}</p>
+                                            </div>
+                                        </div>
+                                        <div className="flex flex-col space-y-4">
+                                            <button onClick={() => setView('manageSpots')} className="bg-blue-600 text-white font-bold py-3 px-6 rounded-xl hover:bg-blue-700 transition duration-300 shadow-lg">{t.manageSpots}</button>
+                                            <button onClick={() => setView('bookingHistory')} className="bg-purple-600 text-white font-bold py-3 px-6 rounded-xl hover:bg-purple-700 transition duration-300 shadow-lg">{t.bookingHistory}</button>
+                                            <button onClick={() => setView('serviceRequests')} className="bg-orange-600 text-white font-bold py-3 px-6 rounded-xl hover:bg-orange-700 transition duration-300 shadow-lg">{t.manageServiceRequests}</button>
+                                        </div>
+                                    </div>
+                                </div>
+                                <Footer />
+                            </div>
+                        );
+                    case 'manageSpots':
+                        return (
+                            <div className="flex flex-col items-center min-h-screen bg-gradient-to-br from-blue-100 to-indigo-200 p-4">
+                                <Header onNavigate={setView} onLogout={onLogout} />
+                                <div className="flex-grow w-full max-w-4xl px-4 py-8">
+                                    <div className="bg-white p-8 rounded-2xl shadow-xl w-full transform transition-all duration-300 scale-100 opacity-100">
+                                        <h2 className="text-4xl font-extrabold text-blue-800 mb-8 text-center">{t.manageSpots}</h2>
+                                        <div className="space-y-4 mb-6">
+                                            <input
+                                                type="text"
+                                                placeholder={t.spotId}
+                                                value={spotId}
+                                                onChange={(e) => setSpotId(e.target.value)}
+                                                className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                                            />
+                                            <select
+                                                value={spotType}
+                                                onChange={(e) => setSpotType(e.target.value)}
+                                                className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-gray-700"
+                                            >
+                                                <option value="standard">{t.standard}</option>
+                                                <option value="premium">{t.premiumSpot}</option>
+                                                <option value="ev-charging">{t.evChargingSpot}</option>
+                                                <option value="valet">{t.valetSpot}</option>
+                                            </select>
+                                            <div className="flex space-x-4">
+                                                <button onClick={addSpot} className="flex-1 bg-green-600 text-white font-bold py-3 px-6 rounded-xl hover:bg-green-700 transition duration-300 shadow-lg">
+                                                    {t.addSpot}
+                                                </button>
+                                                <button onClick={removeSpot} className="flex-1 bg-red-600 text-white font-bold py-3 px-6 rounded-xl hover:bg-red-700 transition duration-300 shadow-lg">
+                                                    {t.remove}
+                                                </button>
+                                            </div>
+                                        </div>
+                                        <h3 className="text-2xl font-bold text-blue-700 mb-4">{t.parkingSpots}</h3>
+                                        <div className="space-y-3">
+                                            {parkingSpots.length > 0 ? (
+                                                parkingSpots.map(spot => (
+                                                    <div key={spot.id} className="bg-gray-50 p-4 rounded-lg border border-gray-200 flex justify-between items-center">
+                                                        <p className="font-semibold">{t.spotId}: {spot.id} ({spot.type})</p>
+                                                        <span className={`px-3 py-1 rounded-full text-sm font-medium ${spot.status === 'available' ? 'bg-green-200 text-green-800' : 'bg-red-200 text-red-800'}`}>
+                                                            {spot.status}
+                                                        </span>
+                                                    </div>
+                                                ))
+                                            ) : (
+                                                <p className="text-center text-gray-600">{t.noSpotsYet}</p>
+                                            )}
+                                        </div>
+                                        <button onClick={() => setView('dashboard')} className="w-full mt-6 bg-gray-500 text-white font-bold py-3 px-6 rounded-xl hover:bg-gray-600 transition duration-300 shadow-lg">
+                                            {t.backToDashboard}
+                                        </button>
+                                    </div>
+                                </div>
+                                <Footer />
+                            </div>
+                        );
+                    case 'bookingHistory':
+                        const providerBookings = [
+                            { id: 'PB001', customer: 'Alice Smith', spot: 'A01', date: '2025-06-20', status: t.completed },
+                            { id: 'PB002', customer: 'Bob Johnson', spot: 'A02', date: '2025-06-27', status: t.confirmed },
+                        ];
+                        return (
+                            <div className="flex flex-col items-center min-h-screen bg-gradient-to-br from-blue-100 to-indigo-200 p-4">
+                                <Header onNavigate={setView} onLogout={onLogout} />
+                                <div className="flex-grow w-full max-w-4xl px-4 py-8">
+                                    <div className="bg-white p-8 rounded-2xl shadow-xl w-full transform transition-all duration-300 scale-100 opacity-100">
+                                        <h2 className="text-4xl font-extrabold text-blue-800 mb-8 text-center">{t.bookingHistory}</h2>
+                                        {providerBookings.length > 0 ? (
+                                            <div className="space-y-4">
+                                                {providerBookings.map(booking => (
+                                                    <div key={booking.id} className="bg-gray-50 p-6 rounded-xl border border-gray-200 shadow-sm">
+                                                        <p className="font-bold text-lg">{t.customer}: {booking.customer}</p>
+                                                        <p>{t.spotId}: {booking.spot}</p>
+                                                        <p>{t.date}: {booking.date}</p>
+                                                        <p className={`font-semibold ${booking.status === t.completed ? 'text-green-600' : 'text-orange-600'}`}>
+                                                            {t.status} {booking.status}
+                                                        </p>
+                                                    </div>
+                                                ))}
+                                            </div>
+                                        ) : (
+                                            <p className="text-center text-gray-600 text-lg">{t.noBookingsYet}</p>
+                                        )}
+                                        <button onClick={() => setView('dashboard')} className="w-full mt-6 bg-gray-500 text-white font-bold py-3 px-6 rounded-xl hover:bg-gray-600 transition duration-300 shadow-lg">
+                                            {t.backToDashboard}
+                                        </button>
+                                    </div>
+                                </div>
+                                <Footer />
+                            </div>
+                        );
+                    case 'serviceRequests':
+                        return (
+                            <div className="flex flex-col items-center min-h-screen bg-gradient-to-br from-blue-100 to-indigo-200 p-4">
+                                <Header onNavigate={setView} onLogout={onLogout} />
+                                <div className="flex-grow w-full max-w-4xl px-4 py-8">
+                                    <div className="bg-white p-8 rounded-2xl shadow-xl w-full transform transition-all duration-300 scale-100 opacity-100">
+                                        <h2 className="text-4xl font-extrabold text-blue-800 mb-8 text-center">{t.manageServiceRequests}</h2>
+                                        {serviceRequests.length > 0 ? (
+                                            <div className="space-y-4">
+                                                {serviceRequests.map(request => (
+                                                    <div key={request.id} className="bg-yellow-50 p-6 rounded-xl border border-yellow-200 shadow-sm flex justify-between items-center">
+                                                        <div>
+                                                            <p className="font-bold text-lg">{t.requestType}: {request.type}</p>
+                                                            <p>{t.customer}: {request.customer}</p>
+                                                            <p className={`font-semibold ${request.status === 'pending' ? 'text-orange-600' : 'text-green-600'}`}>
+                                                                {t.status} {request.status}
+                                                            </p>
+                                                        </div>
+                                                        {request.status === 'pending' && (
+                                                            <button onClick={() => completeRequest(request.id)} className="bg-green-600 text-white py-2 px-4 rounded-lg text-sm hover:bg-green-700 transition duration-300">
+                                                                {t.complete}
+                                                            </button>
+                                                        )}
+                                                    </div>
+                                                ))}
+                                            </div>
+                                        ) : (
+                                            <p className="text-center text-gray-600 text-lg">{t.noServiceRequests}</p>
+                                        )}
+                                        <button onClick={() => setView('dashboard')} className="w-full mt-6 bg-gray-500 text-white font-bold py-3 px-6 rounded-xl hover:bg-gray-600 transition duration-300 shadow-lg">
+                                            {t.backToDashboard}
+                                        </button>
+                                    </div>
+                                </div>
+                                <Footer />
+                            </div>
+                        );
+                    default:
+                        return null;
+                }
+            };
+
+            return (
+                <div className="flex flex-col min-h-screen">
+                    <Header onNavigate={setView} onLogout={onLogout} />
+                    {renderProviderView()}
+                    <Footer />
+                </div>
+            );
+        };
+
+        // --- Login Screen ---
+        const LoginScreen = ({ onLogin, onNavigate, onRegisterAsProvider }) => {
+            const { appLanguage } = useContext(LanguageContext);
+            const t = translations[appLanguage];
+            const [username, setUsername] = useState('');
+            const [password, setPassword] = useState('');
+            const [isUserLogin, setIsUserLogin] = useState(true); // true for user, false for provider
+            const [modalShow, setModalShow] = useState(false);
+            const [modalMessage, setModalMessage] = useState('');
+
+            const handleLogin = () => {
+                // Simplified login logic for demonstration
+                // In a real application, you would validate credentials via an API
+                if (isUserLogin) {
+                    if (username === 'user@example.com' && password === 'password') {
+                        onLogin('customer');
+                        setModalMessage(t.loginSuccessful);
+                    } else {
+                        setModalMessage(t.invalidCredentials);
+                    }
+                } else { // Provider login
+                    if (username === 'provider@example.com' && password === 'providerpass') {
+                        onLogin('provider');
+                        setModalMessage(t.welcomeProvider);
+                    } else {
+                        setModalMessage(t.invalidCredentials);
+                    }
+                }
+                setModalShow(true);
+            };
+
+            const handleRegister = () => {
+                // This would navigate to a separate registration screen in a full app
+                alert(t.emailSent + username); // Simulating registration process
+                onNavigate('register'); // Assuming a 'register' view in App
+            };
+
+            return (
+                <div className="flex flex-col items-center justify-center min-h-screen bg-gradient-to-br from-blue-100 to-indigo-200 p-4">
+                    <Header onNavigate={() => onNavigate('settings')} showLogout={false} /> {/* Settings accessible from login */}
+                    <div className="flex-grow flex flex-col items-center justify-center w-full max-w-4xl px-4 py-8">
+                        <div className="bg-white p-8 rounded-2xl shadow-xl w-full max-w-md transform transition-all duration-300 scale-100 opacity-100">
+                            <h2 className="text-4xl font-extrabold text-blue-800 mb-8 text-center">{isUserLogin ? t.userLogin : t.providerLogin}</h2>
+                            
+                            <div className="flex justify-center mb-6">
+                                <button
+                                    onClick={() => setIsUserLogin(true)}
+                                    className={`py-2 px-5 rounded-l-xl font-semibold transition-all duration-300 ${
+                                        isUserLogin ? 'bg-blue-600 text-white shadow-md' : 'bg-gray-200 text-gray-800 hover:bg-gray-300'
+                                    }`}
+                                >
+                                    {t.userLogin}
+                                </button>
+                                <button
+                                    onClick={() => setIsUserLogin(false)}
+                                    className={`py-2 px-5 rounded-r-xl font-semibold transition-all duration-300 ${
+                                        !isUserLogin ? 'bg-blue-600 text-white shadow-md' : 'bg-gray-200 text-gray-800 hover:bg-gray-300'
+                                    }`}
+                                >
+                                    {t.providerLogin}
+                                </button>
+                            </div>
+
+                            <input
+                                type="text"
+                                placeholder={t.username}
+                                value={username}
+                                onChange={(e) => setUsername(e.target.value)}
+                                className="w-full p-3 mb-4 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                            />
+                            <input
+                                type="password"
+                                placeholder={t.password}
+                                value={password}
+                                onChange={(e) => setPassword(e.target.value)}
+                                className="w-full p-3 mb-6 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                            />
+                            <button
+                                onClick={handleLogin}
+                                className="w-full bg-blue-600 text-white font-bold py-3 px-6 rounded-xl hover:bg-blue-700 transition duration-300 shadow-lg"
+                            >
+                                {t.login}
+                            </button>
+                            <button
+                                onClick={() => onNavigate('forgotPassword')}
+                                className="w-full mt-4 text-blue-600 hover:underline font-semibold"
+                            >
+                                {t.forgotPassword}
+                            </button>
+                            {isUserLogin && (
+                                <button
+                                    onClick={handleRegister}
+                                    className="w-full bg-green-600 text-white font-bold py-3 px-6 rounded-xl hover:bg-green-700 transition duration-300 shadow-lg mt-4"
+                                >
+                                    {t.registerForSmartPark}
+                                </button>
+                            )}
+                            {!isUserLogin && (
+                                <button
+                                    onClick={onRegisterAsProvider}
+                                    className="w-full bg-purple-600 text-white font-bold py-3 px-6 rounded-xl hover:bg-purple-700 transition duration-300 shadow-lg mt-4"
+                                >
+                                    {t.registerAsProvider}
+                                </button>
+                            )}
                         </div>
                     </div>
+                    <Modal
+                        show={modalShow}
+                        title={t.loginFailed}
+                        message={modalMessage}
+                        onClose={() => setModalShow(false)}
+                    />
+                    <Footer />
+                </div>
+            );
+        };
+
+        // --- Register Screen (for Users) ---
+        const RegisterScreen = ({ onRegisterSuccess, onBackToLogin }) => {
+            const { appLanguage } = useContext(LanguageContext);
+            const t = translations[appLanguage];
+            const [fullName, setFullName] = useState('');
+            const [mobileNumber, setMobileNumber] = useState('');
+            const [email, setEmail] = useState('');
+            const [password, setPassword] = useState('');
+            const [modalShow, setModalShow] = useState(false);
+            const [modalTitle, setModalTitle] = useState('');
+            const [modalMessage, setModalMessage] = useState('');
+
+            const handleRegister = () => {
+                if (!fullName || !mobileNumber || !email || !password) {
+                    setModalTitle(t.registrationFailed);
+                    setModalMessage(t.pleaseFillAllFields);
+                    setModalShow(true);
+                    return;
+                }
+                // Simulate registration success
+                // In a real app, send data to a backend (where you'd handle DB insertion)
+                setModalTitle(t.registrationSuccessful);
+                setModalMessage(t.welcomeToSmartPark);
+                setModalShow(true);
+                setTimeout(() => {
+                    setModalShow(false);
+                    onRegisterSuccess();
+                }, 2000);
+            };
+
+            return (
+                <div className="flex flex-col items-center justify-center min-h-screen bg-gradient-to-br from-blue-100 to-indigo-200 p-4">
+                    <div className="bg-white p-8 rounded-2xl shadow-xl w-full max-w-md transform transition-all duration-300 scale-100 opacity-100">
+                        <h2 className="text-4xl font-extrabold text-blue-800 mb-8 text-center">{t.registerForSmartPark}</h2>
+                        <input
+                            type="text"
+                            placeholder={t.fullName}
+                            value={fullName}
+                            onChange={(e) => setFullName(e.target.value)}
+                            className="w-full p-3 mb-4 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                        />
+                        <input
+                            type="tel"
+                            placeholder={t.mobileNumber}
+                            value={mobileNumber}
+                            onChange={(e) => setMobileNumber(e.target.value)}
+                            className="w-full p-3 mb-4 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                        />
+                        <input
+                            type="email"
+                            placeholder={t.email}
+                            value={email}
+                            onChange={(e) => setEmail(e.target.value)}
+                            className="w-full p-3 mb-4 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                        />
+                        <input
+                            type="password"
+                            placeholder={t.password}
+                            value={password}
+                            onChange={(e) => setPassword(e.target.value)}
+                            className="w-full p-3 mb-6 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                        />
+                        <button
+                            onClick={handleRegister}
+                            className="w-full bg-blue-600 text-white font-bold py-3 px-6 rounded-xl hover:bg-blue-700 transition duration-300 shadow-lg"
+                        >
+                            {t.register}
+                        </button>
+                        <button
+                            onClick={onBackToLogin}
+                            className="w-full mt-4 text-blue-600 hover:underline font-semibold"
+                        >
+                            {t.backToLogin}
+                        </button>
+                    </div>
+                    <Modal
+                        show={modalShow}
+                        title={modalTitle}
+                        message={modalMessage}
+                        onClose={() => setModalShow(false)}
+                    />
+                </div>
+            );
+        };
+
+        // --- Provider Registration Screen ---
+        const ProviderRegistrationScreen = ({ onRegisterSuccess, onBackToUserTypeSelection }) => {
+            const { appLanguage } = useContext(LanguageContext);
+            const t = translations[appLanguage];
+            const [fullName, setFullName] = useState('');
+            const [email, setEmail] = useState('');
+            const [password, setPassword] = useState('');
+            const [modalShow, setModalShow] = useState(false);
+            const [modalTitle, setModalTitle] = useState('');
+            const [modalMessage, setModalMessage] = useState('');
+
+            const handleRegister = () => {
+                if (!fullName || !email || !password) {
+                    setModalTitle(t.registrationFailed);
+                    setModalMessage(t.pleaseFillAllFields);
+                    setModalShow(true);
+                    return;
+                }
+                // Simulate provider registration
+                alert("Provider registration successful for: " + email);
+                setModalTitle(t.registrationSuccessful);
+                setModalMessage("Provider registration successful!");
+                setModalShow(true);
+                setTimeout(() => {
+                    setModalShow(false);
+                    onRegisterSuccess();
+                }, 2000);
+            };
+
+            return (
+                <div className="flex flex-col items-center justify-center min-h-screen bg-gradient-to-br from-blue-100 to-indigo-200 p-4">
+                    <div className="bg-white p-8 rounded-2xl shadow-xl w-full max-w-md transform transition-all duration-300 scale-100 opacity-100">
+                        <h2 className="text-4xl font-extrabold text-blue-800 mb-8 text-center">{t.providerRegistration}</h2>
+                        <input
+                            type="text"
+                            placeholder={t.fullName}
+                            value={fullName}
+                            onChange={(e) => setFullName(e.target.value)}
+                            className="w-full p-3 mb-4 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                        />
+                        <input
+                            type="email"
+                            placeholder={t.email}
+                            value={email}
+                            onChange={(e) => setEmail(e.target.value)}
+                            className="w-full p-3 mb-4 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                        />
+                        <input
+                            type="password"
+                            placeholder={t.password}
+                            value={password}
+                            onChange={(e) => setPassword(e.target.value)}
+                            className="w-full p-3 mb-6 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                        />
+                        <button
+                            onClick={handleRegister}
+                            className="w-full bg-purple-600 text-white font-bold py-3 px-6 rounded-xl hover:bg-purple-700 transition duration-300 shadow-lg"
+                        >
+                            {t.registerAsProvider}
+                        </button>
+                        <button
+                            onClick={onBackToUserTypeSelection}
+                            className="w-full mt-4 text-purple-600 hover:underline font-semibold"
+                        >
+                            {t.backToUserTypeSelection}
+                        </button>
+                    </div>
+                    <Modal
+                        show={modalShow}
+                        title={modalTitle}
+                        message={modalMessage}
+                        onClose={() => setModalShow(false)}
+                    />
                 </div>
             );
         };
 
         // --- About Us Screen ---
-        const AboutUsScreen = () => {
+        const AboutUsScreen = ({ onBack }) => {
             const { appLanguage } = useContext(LanguageContext);
             const t = translations[appLanguage];
             return (
-                <div className="p-8 space-y-8 bg-white text-blue-900">
-                    <div className="bg-blue-50 rounded-2xl p-6 shadow-xl border border-blue-200">
-                        <h2 className="text-2xl font-bold text-amber-600 mb-4">{t.aboutUs}</h2>
-                        <p className="text-blue-800 mb-4">{t.aboutUsContent}</p>
-                        <p className="text-blue-600 text-sm italic">{t.disclaimer}</p>
-                    </div>
-                </div>
-            );
-        };
-
-
-        // Settings Screen
-        const SettingsScreen = ({ showModal, setAppLanguage, onLogout, onNavigate }) => {
-            const { appLanguage } = useContext(LanguageContext);
-            const t = translations[appLanguage];
-
-            const handleDeleteAccount = () => {
-                showModal(t.confirmDeletion, null,
-                    <div>
-                        <p>{t.areYouSureDeleteAccount}</p>
-                        <p className="text-sm text-red-400 mt-2">{t.gdprDataRemoval}</p>
-                        <button 
-                            onClick={() => { 
-                                showModal(t.accountDeleted, t.accountDeletedMessage); 
-                                onLogout(); // Log out after account deletion
-                            }} 
-                            className="mt-4 bg-red-600 text-white font-bold py-2 px-5 rounded-xl hover:bg-red-700 transition duration-300"
-                            aria-label={t.confirmDeletion}
+                <div className="flex flex-col items-center justify-center min-h-screen bg-gradient-to-br from-blue-100 to-indigo-200 p-4">
+                    <div className="bg-white p-8 rounded-2xl shadow-xl w-full max-w-2xl transform transition-all duration-300 scale-100 opacity-100">
+                        <h2 className="text-4xl font-extrabold text-blue-800 mb-8 text-center">{t.aboutUs}</h2>
+                        <p className="text-gray-700 whitespace-pre-line leading-relaxed mb-8">
+                            {t.aboutUsContent}
+                        </p>
+                        <p className="text-gray-500 text-sm italic text-center mb-8">
+                            {t.disclaimer}
+                        </p>
+                        <button
+                            onClick={onBack}
+                            className="w-full bg-gray-500 text-white font-bold py-3 px-6 rounded-xl hover:bg-gray-600 transition duration-300 shadow-lg"
                         >
-                            {t.deleteMyAccount}
+                            {t.backToUserTypeSelection} {/* Reusing this translation key for "Back" */}
                         </button>
                     </div>
-                );
-            };
-
-            return (
-                <div className="p-8 space-y-8 bg-white text-blue-900">
-                    <div className="bg-blue-50 rounded-2xl p-6 shadow-xl border border-blue-200">
-                        <h2 className="text-2xl font-bold text-amber-600 mb-4">{t.appSettings}</h2>
-
-                        <div className="mb-6">
-                            <h3 className="text-xl font-semibold text-blue-900 mb-3">{t.languageRegion}</h3>
-                            <select 
-                                value={appLanguage} 
-                                onChange={(e) => setAppLanguage(e.target.value)} 
-                                className="w-full p-3 rounded-xl bg-blue-100 text-blue-900 focus:outline-none focus:ring-2 focus:ring-amber-400"
-                                aria-label={t.languageRegion}
-                            >
-                                <option value="en">English</option>
-                                <option value="hi">हिंदी (Hindi)</option>
-                            </select>
-                            <p className="text-blue-700 text-sm mt-2">{t.currentLanguage(appLanguage === 'en' ? 'English' : 'Hindi')}</p>
-                        </div>
-
-                        <div className="mb-6">
-                            <h3 className="text-xl font-semibold text-blue-900 mb-3">{t.familySharing}</h3>
-                            <p className="text-blue-700 mb-2">{t.shareSubscription}</p>
-                            <button 
-                                onClick={() => showModal(t.familySharing, t.familySharingInitiated)} 
-                                className="bg-purple-600 text-white font-bold py-2 px-5 rounded-xl hover:bg-purple-700 transition duration-300"
-                                aria-label={t.manageFamily}
-                            >
-                                {t.manageFamily}
-                            </button>
-                        </div>
-                        
-                        <div className="mb-6">
-                            <h3 className="text-xl font-semibold text-blue-900 mb-3">{t.dataPrivacy}</h3>
-                            <button 
-                                onClick={handleDeleteAccount} 
-                                className="bg-red-700 text-white font-bold py-2 px-5 rounded-xl hover:bg-red-800 transition duration-300"
-                                aria-label={t.deleteMyAccount}
-                            >
-                                {t.deleteMyAccount}
-                            </button>
-                            <p className="text-blue-700 text-sm mt-2">{t.exerciseRightToDelete}</p>
-                        </div>
-
-                        <div>
-                            <h3 className="text-xl font-semibold text-blue-900 mb-3">{t.aboutUs}</h3>
-                            <button 
-                                onClick={() => onNavigate('aboutUs')} 
-                                className="bg-blue-600 text-white font-bold py-2 px-5 rounded-xl hover:bg-blue-700 transition duration-300"
-                                aria-label={t.aboutUs}
-                            >
-                                {t.aboutUs}
-                            </button>
-                        </div>
-                    </div>
-                </div>
-            );
-        };
-
-        const PrebookScreen = ({ showModal }) => {
-            const { appLanguage } = useContext(LanguageContext);
-            const t = translations[appLanguage];
-            return (
-                <div className="p-4 space-y-6 bg-white text-blue-900">
-                    <div className="bg-blue-50 rounded-2xl p-6 shadow-lg border border-blue-200">
-                        <h3 className="text-xl font-bold text-amber-600 mb-4">{t.prebookAdvanced}</h3>
-                        <div className="space-y-4">
-                            <div>
-                                <label htmlFor="prebook-location" className="block text-blue-800 text-sm font-bold mb-2">{t.location}</label>
-                                <input 
-                                    type="text" 
-                                    id="prebook-location" 
-                                    placeholder="e.g., Near Railway Station" 
-                                    className="w-full p-3 rounded-xl bg-blue-100 text-blue-900 placeholder-blue-400 focus:outline-none focus:ring-2 focus:ring-amber-400"
-                                />
-                            </div>
-                            <div>
-                                <label htmlFor="prebook-date" className="block text-blue-800 text-sm font-bold mb-2">{t.date}</label>
-                                <input 
-                                    type="date" 
-                                    id="prebook-date" 
-                                    className="w-full p-3 rounded-xl bg-blue-100 text-blue-900 focus:outline-none focus:ring-2 focus:ring-amber-400"
-                                />
-                            </div>
-                            <div>
-                                <label htmlFor="prebook-time-from" className="block text-blue-800 text-sm font-bold mb-2">{t.timeFrom}</label>
-                                <input 
-                                    type="time" 
-                                    id="prebook-time-from" 
-                                    className="w-full p-3 rounded-xl bg-blue-100 text-blue-900 focus:outline-none focus:ring-2 focus:ring-amber-400"
-                                />
-                            </div>
-                            <div>
-                                <label htmlFor="prebook-time-to" className="block text-blue-800 text-sm font-bold mb-2">{t.timeTo}</label>
-                                <input 
-                                    type="time" 
-                                    id="prebook-time-to" 
-                                    className="w-full p-3 rounded-xl bg-blue-100 text-blue-900 focus:outline-none focus:ring-2 focus:ring-amber-400"
-                                />
-                            </div>
-                        </div>
-                        <button 
-                            onClick={() => showModal(t.prebook, t.prebookSubmitted)} 
-                            className="mt-6 w-full bg-pink-600 text-white font-bold py-3 px-6 rounded-xl hover:bg-pink-700 transition duration-300 shadow-lg"
-                        >
-                            {t.confirmPrebook}
-                        </button>
-                    </div>
-                </div>
-            );
-        };
-
-        const MyBookingsScreen = ({ bookings, onRepeatBooking }) => {
-            const { appLanguage } = useContext(LanguageContext);
-            const t = translations[appLanguage];
-            return (
-                <div className="p-4 space-y-6 bg-white text-blue-900">
-                    <div className="bg-blue-50 rounded-2xl p-6 shadow-lg border border-blue-200">
-                        <h3 className="text-xl font-bold text-amber-600 mb-4">{t.myBookings}</h3>
-                        <div className="space-y-3">
-                            {bookings.length === 0 ? (
-                                <p className="text-blue-700 text-center">{t.noBookingsYet}</p>
-                            ) : (
-                                bookings.map((booking, index) => (
-                                    <div key={index} className="bg-blue-100 p-3 rounded-xl shadow-md">
-                                        <p className="font-bold text-blue-900">{booking.slotName || booking.type}</p>
-                                        {booking.car && <p className="text-sm text-blue-700">{booking.car}</p>}
-                                        {booking.pickup && <p className="text-sm text-blue-700">From: {booking.pickup}</p>}
-                                        {booking.dropoff && <p className="text-sm text-blue-700">To: {booking.dropoff}</p>}
-                                        <p className="text-sm text-blue-700">{booking.date} | {booking.time}</p>
-                                        <p className="text-sm text-pink-600 mt-1">{t.status} {booking.status}</p>
-                                        {booking.carWash && <p className="text-sm text-blue-700">Includes Car Wash</p>}
-                                        {booking.amount > 0 && <p className="text-sm text-blue-900 font-semibold">Total: ₹{booking.amount.toFixed(2)}</p>}
-                                        
-                                        {booking.status === t.confirmed && booking.slotName && (
-                                            <button 
-                                                onClick={() => onRepeatBooking(booking)}
-                                                className="mt-2 bg-purple-600 text-white text-sm px-4 py-2 rounded-lg hover:bg-purple-700 transition duration-300"
-                                            >
-                                                {t.repeatBooking}
-                                            </button>
-                                        )}
-                                    </div>
-                                ))
-                            )}
-                        </div>
-                    </div>
-                </div>
-            );
-        };
-
-
-        // --- Customer App Main Component ---
-        const CustomerApp = ({ onLogout, onBackToUserTypeSelection }) => {
-            const { appLanguage } = useContext(LanguageContext);
-            const t = translations[appLanguage];
-
-            const [currentScreen, setCurrentScreen] = useState('login'); // Start with login
-            const [loggedIn, setLoggedIn] = useState(false);
-            const [bookingDetails, setBookingDetails] = useState(null);
-            const [paymentAmount, setPaymentAmount] = useState(0);
-            const [customerBookings, setCustomerBookings] = useState([]); // New state for bookings
-
-            const [showModal, setShowModal] = useState(false);
-            const [modalTitle, setModalTitle] = useState('');
-            const [modalMessage, setModalMessage] = useState('');
-            const [modalChildren, setModalChildren] = useState(null);
-
-            const openModal = (title, message, children = null) => {
-                setModalTitle(title);
-                setModalMessage(message);
-                setModalChildren(children);
-                setShowModal(true);
-            };
-
-            const closeModal = () => {
-                setShowModal(false);
-                setModalTitle('');
-                setModalMessage('');
-                setModalChildren(null);
-            };
-
-            const handleLoginSuccess = () => {
-                setLoggedIn(true);
-                setCurrentScreen('home');
-            };
-
-            const handleRegisterSuccess = () => {
-                setLoggedIn(true);
-                setCurrentScreen('home');
-            };
-
-            const handleSearchSuccess = () => {
-                setCurrentScreen('slotSelection');
-            };
-
-            const handleSlotSelect = (slot, carWash) => {
-                setBookingDetails({ slot, carWash });
-                setCurrentScreen('bookingSummary');
-            };
-
-            const handleConfirmBooking = (amount) => {
-                setPaymentAmount(amount);
-                setCurrentScreen('payment');
-            };
-
-            const handlePaymentSuccess = () => {
-                // Add parking booking to history
-                const newBooking = {
-                    id: generateId(),
-                    slotName: bookingDetails.slot.name,
-                    date: new Date().toLocaleDateString(),
-                    time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
-                    amount: paymentAmount,
-                    status: t.confirmed,
-                    carWash: bookingDetails.carWash,
-                    originalSlot: bookingDetails.slot // Store original slot for repeat booking
-                };
-                setCustomerBookings(prev => [...prev, newBooking]);
-                setCurrentScreen('invoicing');
-            };
-
-            const handleNewBooking = () => {
-                setBookingDetails(null);
-                setPaymentAmount(0);
-                setCurrentScreen('home');
-            };
-
-            const handleRepeatBooking = (booking) => {
-                // Simulate re-selecting the slot and going to booking summary
-                setBookingDetails({ slot: booking.originalSlot, carWash: booking.carWash });
-                setCurrentScreen('bookingSummary');
-                openModal(t.repeatBooking, `Repeating booking for ${booking.slotName}.`);
-            };
-
-            const handleAddServiceBooking = (serviceBooking) => {
-                setCustomerBookings(prev => [...prev, { ...serviceBooking, id: generateId(), status: t.confirmed }]);
-                navigateTo('mybookings'); // Go to my bookings to show the new service booking
-            };
-
-            const navigateTo = (screen) => {
-                setCurrentScreen(screen);
-            };
-
-            return (
-                <div className="min-h-screen bg-white text-blue-900 flex flex-col">
-                    <Header onNavigate={navigateTo} onLogout={onLogout} showLogout={loggedIn} />
-
-                    <main className="flex-1 overflow-y-auto"> {/* Added overflow-y-auto */}
-                        {!loggedIn ? (
-                            currentScreen === 'login' ? (
-                                <CustomerLoginScreen 
-                                    onLoginSuccess={handleLoginSuccess} 
-                                    onRegisterClick={() => setCurrentScreen('registration')} 
-                                    onForgotPasswordClick={() => setCurrentScreen('forgotPassword')}
-                                    onBackToUserTypeSelection={onBackToUserTypeSelection}
-                                    showModal={openModal}
-                                />
-                            ) : currentScreen === 'registration' ? (
-                                <RegistrationScreen 
-                                    onRegisterSuccess={handleRegisterSuccess} 
-                                onLoginClick={() => setCurrentScreen('login')}
-                                    onBackToUserTypeSelection={onBackToUserTypeSelection}
-                                    showModal={openModal}
-                                />
-                            ) : ( // forgotPassword screen
-                                <ForgotPasswordScreen 
-                                    onBackToLogin={() => setCurrentScreen('login')}
-                                    showModal={openModal}
-                                />
-                            )
-                        ) : (
-                            <div key={appLanguage} className="flex-1"> {/* Added key for language change */}
-                                {currentScreen === 'home' && (
-                                    <HomeScreen onSearchSuccess={handleSearchSuccess} showModal={openModal} />
-                                )}
-                                {currentScreen === 'slotSelection' && (
-                                    <SlotSelectionScreen onSlotSelect={handleSlotSelect} showModal={openModal} />
-                                )}
-                                {currentScreen === 'bookingSummary' && (
-                                    <BookingSummaryScreen bookingDetails={bookingDetails} onConfirmBooking={handleConfirmBooking} showModal={openModal} />
-                                )}
-                                {currentScreen === 'payment' && (
-                                    <PaymentScreen amount={paymentAmount} onPaymentSuccess={handlePaymentSuccess} showModal={openModal} />
-                                )}
-                                {currentScreen === 'invoicing' && (
-                                    <InvoicingScreen bookingDetails={bookingDetails} amount={paymentAmount} onNewBooking={handleNewBooking} showModal={openModal} />
-                                )}
-                                {currentScreen === 'settings' && (
-                                    <SettingsScreen showModal={openModal} onLogout={onLogout} onNavigate={navigateTo} />
-                                )}
-                                {currentScreen === 'services' && (
-                                    <ServicesScreen showModal={openModal} onNavigate={navigateTo} onAddServiceBooking={handleAddServiceBooking} />
-                                )}
-                                {currentScreen === 'prebook' && (
-                                    <PrebookScreen showModal={openModal} />
-                                )}
-                                {currentScreen === 'mybookings' && (
-                                    <MyBookingsScreen bookings={customerBookings} onRepeatBooking={handleRepeatBooking} />
-                                )}
-                                {currentScreen === 'carWashBooking' && (
-                                    <CarWashBookingScreen onBookingComplete={handleAddServiceBooking} showModal={openModal} />
-                                )}
-                                {currentScreen === 'maintenanceBooking' && (
-                                    <MaintenanceBookingScreen onBookingComplete={handleAddServiceBooking} showModal={openModal} />
-                                )}
-                                {currentScreen === 'valetBooking' && (
-                                    <ValetBookingScreen onBookingComplete={handleAddServiceBooking} showModal={openModal} />
-                                )}
-                                {currentScreen === 'aboutUs' && (
-                                    <AboutUsScreen />
-                                )}
-                            </div>
-                        )}
-                    </main>
-
-                    {loggedIn && ( 
-                        <nav className="fixed bottom-0 left-0 right-0 bg-blue-800 border-t border-blue-700 shadow-lg z-20">
-                            <ul className="flex justify-around items-center h-16">
-                                <li>
-                                    <button 
-                                        onClick={() => navigateTo('home')} 
-                                        className={`flex flex-col items-center text-sm font-semibold p-2 rounded-xl transition duration-300 ${currentScreen === 'home' ? 'text-amber-400' : 'text-blue-200 hover:text-white'}`}
-                                    >
-                                        <span className="text-xl">🏠</span>
-                                        Home
-                                    </button>
-                                </li>
-                                <li>
-                                    <button 
-                                        onClick={() => navigateTo('prebook')} 
-                                        className={`flex flex-col items-center text-sm font-semibold p-2 rounded-xl transition duration-300 ${currentScreen === 'prebook' ? 'text-amber-400' : 'text-blue-200 hover:text-white'}`}
-                                    >
-                                        <span className="text-xl">🗓️</span>
-                                        Pre-book
-                                    </button>
-                                </li>
-                                <li>
-                                    <button 
-                                        onClick={() => navigateTo('services')} 
-                                        className={`flex flex-col items-center text-sm font-semibold p-2 rounded-xl transition duration-300 ${currentScreen === 'services' ? 'text-amber-400' : 'text-blue-200 hover:text-white'}`}
-                                    >
-                                        <span className="text-xl">✨</span>
-                                        Services
-                                    </button>
-                                </li>
-                                <li>
-                                    <button 
-                                        onClick={() => navigateTo('mybookings')} 
-                                        className={`flex flex-col items-center text-sm font-semibold p-2 rounded-xl transition duration-300 ${currentScreen === 'mybookings' ? 'text-amber-400' : 'text-blue-200 hover:text-white'}`}
-                                    >
-                                        <span className="text-xl">📝</span>
-                                        My Bookings
-                                    </button>
-                                </li>
-                            </ul>
-                        </nav>
-                    )}
-
-                    <Modal show={showModal} title={modalTitle} message={modalMessage} onClose={closeModal}>
-                        {modalChildren}
-                    </Modal>
-                </div>
-            );
-        };
-
-        // --- Service Provider App Screens ---
-
-        // Provider Login Screen
-        const ProviderLoginScreen = ({ onLoginSuccess, onRegisterClick, onForgotPasswordClick, onBackToUserTypeSelection, showModal }) => {
-            const { appLanguage } = useContext(LanguageContext);
-            const t = translations[appLanguage];
-            const [username, setUsername] = useState('');
-            const [password, setPassword] = useState('');
-
-            const handleLogin = (e) => {
-                e.preventDefault();
-                // Simple mock authentication
-                if (username === 'provider' && password === 'password') {
-                    showModal(t.welcomeProvider, t.welcomeProvider);
-                    onLoginSuccess();
-                } else {
-                    showModal(t.loginFailed, t.invalidCredentials);
-                }
-            };
-
-            return (
-                <div className="flex flex-col items-center justify-center min-h-[calc(100vh-160px)] p-4 bg-white text-blue-900">
-                    <div className="bg-blue-50 rounded-2xl p-8 shadow-xl max-w-md w-full border border-blue-200">
-                        <h2 className="text-3xl font-bold text-amber-600 mb-6 text-center">{t.providerLogin}</h2>
-                        <form onSubmit={handleLogin} className="space-y-4">
-                            <div>
-                                <label htmlFor="provider-username" className="block text-blue-800 text-sm font-bold mb-2">{t.username}</label>
-                                <input 
-                                    type="text" 
-                                    id="provider-username" 
-                                    value={username} 
-                                    onChange={(e) => setUsername(e.target.value)} 
-                                    className="w-full p-3 rounded-xl bg-blue-100 text-blue-900 placeholder-blue-400 focus:outline-none focus:ring-2 focus:ring-amber-400" 
-                                    placeholder="provider"
-                                    aria-label={t.username}
-                                />
-                            </div>
-                            <div>
-                                <label htmlFor="provider-password" className="block text-blue-800 text-sm font-bold mb-2">{t.password}</label>
-                                <input 
-                                    type="password" 
-                                    id="provider-password" 
-                                    value={password} 
-                                    onChange={(e) => setPassword(e.target.value)} 
-                                    className="w-full p-3 rounded-xl bg-blue-100 text-blue-900 placeholder-blue-400 focus:outline-none focus:ring-2 focus:ring-amber-400" 
-                                    placeholder="password"
-                                    aria-label={t.password}
-                                />
-                            </div>
-                            <button 
-                                type="submit" 
-                                className="w-full bg-blue-600 text-white font-bold py-3 px-6 rounded-xl hover:bg-blue-700 transition duration-300 shadow-lg"
-                                aria-label={t.login}
-                            >
-                                {t.login}
-                            </button>
-                        </form>
-                        <button 
-                            onClick={onForgotPasswordClick} 
-                            className="mt-4 w-full text-blue-800 text-sm font-bold hover:underline"
-                            aria-label={t.forgotPassword}
-                        >
-                            {t.forgotPassword}
-                        </button>
-                        <button 
-                            onClick={onRegisterClick} 
-                            className="mt-2 w-full text-blue-800 font-bold py-2 px-4 rounded-xl hover:bg-blue-100 transition duration-300"
-                            aria-label={t.providerRegistration}
-                        >
-                            {t.providerRegistration}
-                        </button>
-                        <button 
-                            onClick={onBackToUserTypeSelection} 
-                            className="mt-4 w-full text-blue-800 font-bold py-2 px-4 rounded-xl hover:bg-blue-100 transition duration-300"
-                            aria-label={t.backToUserTypeSelection}
-                        >
-                            {t.backToUserTypeSelection}
-                        </button>
-                    </div>
-                </div>
-            );
-        };
-
-        // Provider Registration Screen
-        const ProviderRegistrationScreen = ({ onRegisterSuccess, onLoginClick, onBackToUserTypeSelection, showModal }) => {
-            const { appLanguage } = useContext(LanguageContext);
-            const t = translations[appLanguage];
-            const [name, setName] = useState('');
-            const [mobile, setMobile] = useState('');
-            const [email, setEmail] = useState('');
-            const [password, setPassword] = useState('');
-
-            const handleRegister = (e) => {
-                e.preventDefault();
-                if (name && mobile && email && password) {
-                    showModal(t.registrationSuccessful, t.welcomeProvider);
-                    console.log(t.emailSent + email); // Simulate sending email
-                    onRegisterSuccess();
-                } else {
-                    showModal(t.registrationFailed, t.pleaseFillAllFields);
-                }
-            };
-
-            return (
-                <div className="flex flex-col items-center justify-center min-h-[calc(100vh-160px)] p-4 bg-white text-blue-900">
-                    <div className="bg-blue-50 rounded-2xl p-8 shadow-xl max-w-md w-full border border-blue-200">
-                        <h2 className="text-3xl font-bold text-amber-600 mb-6 text-center">{t.registerAsProvider}</h2>
-                        <form onSubmit={handleRegister} className="space-y-4">
-                            <div>
-                                <label htmlFor="provider-reg-name" className="block text-blue-800 text-sm font-bold mb-2">{t.fullName}</label>
-                                <input 
-                                    type="text" 
-                                    id="provider-reg-name" 
-                                    value={name} 
-                                    onChange={(e) => setName(e.target.value)} 
-                                    className="w-full p-3 rounded-xl bg-blue-100 text-blue-900 placeholder-blue-400 focus:outline-none focus:ring-2 focus:ring-amber-400" 
-                                    placeholder="Service Provider Name"
-                                    aria-label={t.fullName}
-                                />
-                            </div>
-                            <div>
-                                <label htmlFor="provider-reg-mobile" className="block text-blue-800 text-sm font-bold mb-2">{t.mobileNumber}</label>
-                                <input 
-                                    type="tel" 
-                                    id="provider-reg-mobile" 
-                                    value={mobile} 
-                                    onChange={(e) => setMobile(e.target.value)} 
-                                    className="w-full p-3 rounded-xl bg-blue-100 text-blue-900 placeholder-blue-400 focus:outline-none focus:ring-2 focus:ring-amber-400" 
-                                    placeholder="9876543210"
-                                    aria-label={t.mobileNumber}
-                                />
-                            </div>
-                            <div>
-                                <label htmlFor="provider-reg-email" className="block text-blue-800 text-sm font-bold mb-2">{t.email}</label>
-                                <input 
-                                    type="email" 
-                                    id="provider-reg-email" 
-                                    value={email} 
-                                    onChange={(e) => setEmail(e.target.value)} 
-                                    className="w-full p-3 rounded-xl bg-blue-100 text-blue-900 placeholder-blue-400 focus:outline-none focus:ring-2 focus:ring-amber-400" 
-                                    placeholder="provider@example.com"
-                                    aria-label={t.email}
-                                />
-                            </div>
-                            <div>
-                                <label htmlFor="provider-reg-password" className="block text-blue-800 text-sm font-bold mb-2">{t.password}</label>
-                                <input 
-                                    type="password" 
-                                    id="provider-reg-password" 
-                                    value={password} 
-                                    onChange={(e) => setPassword(e.target.value)} 
-                                    className="w-full p-3 rounded-xl bg-blue-100 text-blue-900 placeholder-blue-400 focus:outline-none focus:ring-2 focus:ring-amber-400" 
-                                    placeholder="********"
-                                    aria-label={t.password}
-                                />
-                            </div>
-                            <button 
-                                type="submit" 
-                                className="w-full bg-pink-600 text-white font-bold py-3 px-6 rounded-xl hover:bg-pink-700 transition duration-300 shadow-lg"
-                                aria-label={t.register}
-                            >
-                                {t.register}
-                            </button>
-                        </form>
-                        <button 
-                            onClick={onLoginClick} 
-                            className="mt-4 w-full text-blue-800 font-bold py-2 px-4 rounded-xl hover:bg-blue-100 transition duration-300"
-                            aria-label={t.providerLogin}
-                        >
-                            {t.providerLogin}
-                        </button>
-                        <button 
-                            onClick={onBackToUserTypeSelection} 
-                            className="mt-4 w-full text-blue-800 font-bold py-2 px-4 rounded-xl hover:bg-blue-100 transition duration-300"
-                            aria-label={t.backToUserTypeSelection}
-                        >
-                            {t.backToUserTypeSelection}
-                        </button>
-                    </div>
-                </div>
-            );
-        };
-
-
-        // Provider Dashboard Screen
-        const ProviderDashboardScreen = ({ showModal }) => {
-            const { appLanguage } = useContext(LanguageContext);
-            const t = translations[appLanguage];
-            const [parkingSpots, setParkingSpots] = useState([
-                { id: 'A1', type: 'standard', available: true },
-                { id: 'A2', type: 'premium', available: true },
-                { id: 'B1', type: 'ev', available: false },
-            ]);
-            const [newSpotId, setNewSpotId] = useState('');
-            const [newSpotType, setNewSpotType] = useState('standard');
-            const [serviceRequests, setServiceRequests] = useState([
-                { id: generateId(), type: 'Car Wash', customer: 'John Doe', status: 'Pending' },
-                { id: generateId(), type: 'Jump-Start', customer: 'Jane Smith', status: 'Pending' },
-            ]);
-
-            const handleAddSpot = () => {
-                if (newSpotId && !parkingSpots.some(spot => spot.id === newSpotId)) {
-                    setParkingSpots([...parkingSpots, { id: newSpotId, type: newSpotType, available: true }]);
-                    showModal(t.spotAdded(newSpotId), '');
-                    setNewSpotId('');
-                } else if (parkingSpots.some(spot => spot.id === newSpotId)) {
-                    showModal(t.spotAlreadyExists(newSpotId), '');
-                }
-            };
-
-            const handleRemoveSpot = (id) => {
-                if (parkingSpots.some(spot => spot.id === id)) {
-                    setParkingSpots(parkingSpots.filter(spot => spot.id !== id));
-                    showModal(t.spotRemoved(id), '');
-                } else {
-                    showModal(t.spotNotFound(id), '');
-                }
-            };
-
-            const handleCompleteRequest = (id) => {
-                setServiceRequests(serviceRequests.map(req => 
-                    req.id === id ? { ...req, status: 'Completed' } : req
-                ));
-                showModal(t.requestCompleted, '');
-            };
-
-            const occupiedSpots = parkingSpots.filter(spot => !spot.available).length;
-            const availableSpots = parkingSpots.filter(spot => spot.available).length;
-
-            return (
-                <div className="p-8 space-y-8 bg-white text-blue-900">
-                    <div className="bg-blue-50 rounded-2xl p-6 shadow-xl border border-blue-200">
-                        <h2 className="text-2xl font-bold text-amber-600 mb-4">{t.dashboard}</h2>
-                        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 text-center">
-                            <div className="bg-blue-100 p-4 rounded-xl shadow-md">
-                                <p className="text-blue-700">{t.parkingSpots}</p>
-                                <p className="text-3xl font-bold text-blue-900">{parkingSpots.length}</p>
-                            </div>
-                            <div className="bg-blue-100 p-4 rounded-xl shadow-md">
-                                <p className="text-blue-700">{t.occupiedSpots}</p>
-                                <p className="text-3xl font-bold text-red-600">{occupiedSpots}</p>
-                            </div>
-                            <div className="bg-blue-100 p-4 rounded-xl shadow-md">
-                                <p className="text-blue-700">{t.availableSpots}</p>
-                                <p className="text-3xl font-bold text-green-600">{availableSpots}</p>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div className="bg-blue-50 rounded-2xl p-6 shadow-xl border border-blue-200">
-                        <h2 className="text-2xl font-bold text-blue-900 mb-4">{t.manageSpots}</h2>
-                        <div className="flex flex-col md:flex-row gap-4 mb-4">
-                            <input 
-                                type="text" 
-                                placeholder={t.spotId} 
-                                value={newSpotId} 
-                                onChange={(e) => setNewSpotId(e.target.value)} 
-                                className="flex-grow p-3 rounded-xl bg-blue-100 text-blue-900 placeholder-blue-400 focus:outline-none focus:ring-2 focus:ring-amber-400"
-                                aria-label={t.spotId}
-                            />
-                            <select
-                                value={newSpotType}
-                                onChange={(e) => setNewSpotType(e.target.value)}
-                                className="p-3 rounded-xl bg-blue-100 text-blue-900 focus:outline-none focus:ring-2 focus:ring-amber-400"
-                                aria-label={t.spotType}
-                            >
-                                <option value="standard">{t.standard}</option>
-                                <option value="premium">{t.premiumSpot}</option>
-                                <option value="ev">{t.evChargingSpot}</option>
-                                <option value="valet">{t.valetSpot}</option>
-                            </select>
-                            <button 
-                                onClick={handleAddSpot} 
-                                className="bg-green-600 text-white font-bold py-3 px-6 rounded-xl hover:bg-green-700 transition duration-300 shadow-lg"
-                                aria-label={t.add}
-                            >
-                                {t.add}
-                            </button>
-                        </div>
-                        <div className="space-y-2">
-                            {parkingSpots.map(spot => (
-                                <div key={spot.id} className="flex justify-between items-center bg-blue-100 p-3 rounded-xl shadow-md">
-                                    <p className="font-bold text-blue-900">{spot.id} ({spot.type}) - {spot.available ? t.available : t.occupied}</p>
-                                    <button 
-                                        onClick={() => handleRemoveSpot(spot.id)} 
-                                        className="bg-red-600 text-white text-sm px-4 py-2 rounded-lg hover:bg-red-700 transition duration-300"
-                                        aria-label={t.remove}
-                                    >
-                                        {t.remove}
-                                    </button>
-                                </div>
-                            ))}
-                        </div>
-                    </div>
-
-                    <div className="bg-blue-50 rounded-2xl p-6 shadow-xl border border-blue-200">
-                        <h2 className="text-2xl font-bold text-blue-900 mb-4">{t.manageServiceRequests}</h2>
-                        <div className="space-y-3">
-                            {serviceRequests.length === 0 ? (
-                                <p className="text-blue-700 text-center">{t.noServiceRequests}</p>
-                            ) : (
-                                serviceRequests.map(request => (
-                                    <div key={request.id} className="flex justify-between items-center bg-blue-100 p-3 rounded-xl shadow-md">
-                                        <div>
-                                            <p className="font-bold text-blue-900">{request.type} ({request.customer})</p>
-                                            <p className="text-sm text-blue-700">{t.status}: {request.status}</p>
-                                        </div>
-                                        {request.status === 'Pending' && (
-                                            <button 
-                                                onClick={() => handleCompleteRequest(request.id)} 
-                                                className="bg-green-600 text-white text-sm px-4 py-2 rounded-lg hover:bg-green-700 transition duration-300"
-                                                aria-label={t.complete}
-                                            >
-                                                {t.complete}
-                                            </button>
-                                        )}
-                                    </div>
-                                ))
-                            )}
-                        </div>
-                    </div>
-                </div>
-            );
-        };
-
-        // --- Service Provider App Main Component ---
-        const ServiceProviderApp = ({ onLogout, onBackToUserTypeSelection }) => {
-            const [currentScreen, setCurrentScreen] = useState('login'); // Start with login
-            const [loggedIn, setLoggedIn] = useState(false);
-            const [showModal, setShowModal] = useState(false);
-            const [modalTitle, setModalTitle] = useState('');
-            const [modalMessage, setModalMessage] = useState('');
-            const [modalChildren, setModalChildren] = useState(null);
-
-            const openModal = (title, message, children = null) => {
-                setModalTitle(title);
-                setModalMessage(message);
-                setModalChildren(children);
-                setShowModal(true);
-            };
-
-            const closeModal = () => {
-                setShowModal(false);
-                setModalTitle('');
-                setModalMessage('');
-                setModalChildren(null);
-            };
-
-            const handleLoginSuccess = () => {
-                setLoggedIn(true);
-                setCurrentScreen('dashboard');
-            };
-
-            const handleRegisterSuccess = () => {
-                setLoggedIn(true);
-                setCurrentScreen('dashboard');
-            };
-
-            return (
-                <div className="min-h-screen bg-white text-blue-900 flex flex-col">
-                    <Header onNavigate={() => {}} onLogout={onLogout} showLogout={loggedIn} />
-                    <main className="flex-1 overflow-y-auto"> {/* Added overflow-y-auto */}
-                        {!loggedIn ? (
-                            currentScreen === 'login' ? (
-                                <ProviderLoginScreen 
-                                    onLoginSuccess={handleLoginSuccess} 
-                                    onRegisterClick={() => setCurrentScreen('registration')} 
-                                    onForgotPasswordClick={() => setCurrentScreen('forgotPassword')}
-                                    onBackToUserTypeSelection={onBackToUserTypeSelection}
-                                    showModal={openModal}
-                                />
-                            ) : currentScreen === 'registration' ? (
-                                <ProviderRegistrationScreen 
-                                    onRegisterSuccess={handleRegisterSuccess} 
-                                    onLoginClick={() => setCurrentScreen('login')}
-                                    onBackToUserTypeSelection={onBackToUserTypeSelection}
-                                    showModal={openModal}
-                                />
-                            ) : ( // forgotPassword screen
-                                <ForgotPasswordScreen 
-                                    onBackToLogin={() => setCurrentScreen('login')}
-                                    showModal={openModal}
-                                />
-                            )
-                        ) : (
-                            <div key={appLanguage} className="flex-1"> {/* Added key for language change */}
-                                <ProviderDashboardScreen showModal={openModal} />
-                            </div>
-                        )}
-                    </main>
-                    <Modal show={showModal} title={modalTitle} message={modalMessage} onClose={closeModal}>
-                        {modalChildren}
-                    </Modal>
                 </div>
             );
         };
 
         // --- User Type Selection Screen ---
-        const UserTypeSelectionScreen = ({ setUserType }) => {
+        const UserTypeSelectionScreen = ({ setUserType, onNavigate }) => {
             const { appLanguage } = useContext(LanguageContext);
             const t = translations[appLanguage];
             return (
-                <div className="flex flex-col items-center justify-center min-h-screen bg-gradient-to-br from-blue-50 to-white text-blue-900 p-4">
-                    <div className="bg-blue-100 rounded-2xl p-8 shadow-xl max-w-md w-full text-center border border-blue-300">
-                        <h2 className="text-3xl font-bold text-amber-600 mb-6">{t.selectUserType}</h2>
-                        <div className="mb-6 rounded-xl overflow-hidden shadow-lg flex justify-center items-center h-48 bg-blue-200"> {/* Adjusted for logo */}
-                            {/* Replaced video with logo placeholder */}
-                            <img 
-                                src="https://placehold.co/150x150/00008B/FFFFFF?text=SmartPark+Logo" 
-                                alt="SmartPark Logo" 
-                                className="w-36 h-36 object-contain"
-                                onError={(e) => {e.target.onerror=null;e.target.src='https://placehold.co/150x150/00008B/FFFFFF?text=Logo+Error';}}
-                            />
-                        </div>
-                        <div className="space-y-4">
-                            <button 
-                                onClick={() => setUserType('customer')} 
-                                className="w-full bg-blue-600 text-white font-bold py-3 px-6 rounded-xl hover:bg-blue-700 transition duration-300 shadow-lg"
-                            >
-                                {t.customerApp}
-                            </button>
-                            <button 
-                                onClick={() => setUserType('provider')} 
-                                className="w-full bg-purple-600 text-white font-bold py-3 px-6 rounded-xl hover:bg-purple-700 transition duration-300 shadow-lg"
-                            >
-                                {t.serviceProviderApp}
-                            </button>
+                <div className="flex flex-col items-center justify-center min-h-screen bg-gradient-to-br from-blue-100 to-indigo-200 p-4">
+                    <Header onNavigate={onNavigate} showLogout={false} /> {/* Settings accessible from this screen */}
+                    <div className="flex-grow flex flex-col items-center justify-center w-full max-w-4xl px-4 py-8">
+                        <div className="bg-white p-8 rounded-2xl shadow-xl w-full max-w-md text-center transform transition-all duration-300 scale-100 opacity-100">
+                            <h2 className="text-4xl font-extrabold text-blue-800 mb-8">{t.selectUserType}</h2>
+                            <div className="space-y-6">
+                                <button
+                                    onClick={() => setUserType('customer')}
+                                    className="w-full bg-blue-600 text-white font-bold py-3 px-6 rounded-xl hover:bg-blue-700 transition duration-300 shadow-lg"
+                                >
+                                    {t.customerApp}
+                                </button>
+                                <button
+                                    onClick={() => setUserType('provider')}
+                                    className="w-full bg-purple-600 text-white font-bold py-3 px-6 rounded-xl hover:bg-purple-700 transition duration-300 shadow-lg"
+                                >
+                                    {t.serviceProviderApp}
+                                </button>
+                            </div>
                         </div>
                     </div>
+                    <Footer />
                 </div>
             );
         };
 
         // --- Main App Component ---
         function App() {
-            const [userType, setUserType] = useState(null); // 'customer', 'provider', or null
+            const [currentView, setCurrentView] = useState('userTypeSelection'); // 'userTypeSelection', 'customer', 'provider', 'login', 'register', 'forgotPassword', 'providerRegister', 'settings', 'aboutUs'
             const [appLanguage, setAppLanguage] = useState('en'); // Default language
 
             const handleLogout = () => {
-                setUserType(null); // Go back to user type selection
+                setCurrentView('userTypeSelection'); // Go back to user type selection
+            };
+
+            const handleLoginSuccess = (userType) => {
+                setCurrentView(userType);
+            };
+
+            const handleRegistrationSuccess = () => {
+                setCurrentView('login');
+            };
+
+            const handleNavigation = (view) => {
+                setCurrentView(view);
+            };
+
+            const renderCurrentView = () => {
+                switch (currentView) {
+                    case 'userTypeSelection':
+                        return <UserTypeSelectionScreen setUserType={(type) => {
+                            if (type === 'customer' || type === 'provider') {
+                                setCurrentView('login'); // Navigate to login screen for both user types
+                            }
+                        }} onNavigate={handleNavigation} />;
+                    case 'login':
+                        return <LoginScreen onLogin={handleLoginSuccess} onNavigate={handleNavigation} onRegisterAsProvider={() => setCurrentView('providerRegister')} />;
+                    case 'register':
+                        return <RegisterScreen onRegisterSuccess={handleRegistrationSuccess} onBackToLogin={() => setCurrentView('login')} />;
+                    case 'providerRegister':
+                        return <ProviderRegistrationScreen onRegisterSuccess={handleRegistrationSuccess} onBackToUserTypeSelection={() => setCurrentView('userTypeSelection')} />;
+                    case 'customer':
+                        return <CustomerApp onLogout={handleLogout} onBackToUserTypeSelection={handleLogout} />;
+                    case 'provider':
+                        return <ServiceProviderApp onLogout={handleLogout} onBackToUserTypeSelection={handleLogout} />;
+                    case 'forgotPassword':
+                        return <ForgotPasswordScreen onBackToLogin={() => setCurrentView('login')} />;
+                    case 'settings':
+                        return <SettingsScreen onBack={() => {
+                            // Go back to the previous view before settings, or a default view
+                            if (appLanguage === 'en' || appLanguage === 'hi') { // If coming from main app (customer/provider)
+                                if (currentView === 'customer') setCurrentView('customer'); // Stay on customer app
+                                else if (currentView === 'provider') setCurrentView('provider'); // Stay on provider app
+                                else setCurrentView('userTypeSelection'); // Or go to user type selection
+                            } else {
+                                setCurrentView('userTypeSelection'); // Default back
+                            }
+                            // Simplified: Just go back to login selection for now or previous app if logged in
+                            if (userType === 'customer') setCurrentView('customer'); // If customer was logged in, go back to customer app
+                            else if (userType === 'provider') setCurrentView('provider'); // If provider was logged in, go back to provider app
+                            else setCurrentView('userTypeSelection'); // Otherwise go to user type selection
+                            
+                            // A more robust solution would track the previous route.
+                            setCurrentView(prevUserType || 'userTypeSelection'); // Assuming prevUserType is defined/passed
+                            // Simpler: Just go back to user type selection after settings
+                             setCurrentView('userTypeSelection');
+                        }} setAppLanguage={setAppLanguage} />; // Pass setAppLanguage
+                    default:
+                        return <UserTypeSelectionScreen setUserType={(type) => {
+                            if (type === 'customer' || type === 'provider') {
+                                setCurrentView('login');
+                            }
+                        }} onNavigate={handleNavigation} />;
+                }
+            };
+
+            // To make `SettingsScreen` navigate back to the previous app, we need to pass the current userType.
+            // Let's refine `App` to store the last active "app" view (customer/provider)
+            const [lastAppView, setLastAppView] = useState(null);
+
+            useEffect(() => {
+                if (currentView === 'customer' || currentView === 'provider') {
+                    setLastAppView(currentView);
+                }
+            }, [currentView]);
+
+            const handleSettingsBack = () => {
+                // If there was a last app view, go back to it, otherwise go to user type selection
+                setCurrentView(lastAppView || 'userTypeSelection');
             };
 
             return (
                 <LanguageContext.Provider value={{ appLanguage, setAppLanguage }}>
-                    {userType === 'customer' && <CustomerApp key={appLanguage} onLogout={handleLogout} onBackToUserTypeSelection={handleLogout} />}
-                    {userType === 'provider' && <ServiceProviderApp key={appLanguage} onLogout={handleLogout} onBackToUserTypeSelection={handleLogout} />}
-                    {userType === null && <UserTypeSelectionScreen setUserType={setUserType} />}
+                    {currentView === 'userTypeSelection' && <UserTypeSelectionScreen setUserType={(type) => {
+                        if (type === 'customer' || type === 'provider') {
+                            setCurrentView('login');
+                        }
+                    }} onNavigate={handleNavigation} />}
+                    {currentView === 'login' && <LoginScreen onLogin={handleLoginSuccess} onNavigate={handleNavigation} onRegisterAsProvider={() => setCurrentView('providerRegister')} />}
+                    {currentView === 'register' && <RegisterScreen onRegisterSuccess={handleRegistrationSuccess} onBackToLogin={() => setCurrentView('login')} />}
+                    {currentView === 'providerRegister' && <ProviderRegistrationScreen onRegisterSuccess={handleRegistrationSuccess} onBackToUserTypeSelection={() => setCurrentView('userTypeSelection')} />}
+                    {currentView === 'customer' && <CustomerApp onLogout={handleLogout} onBackToUserTypeSelection={handleLogout} />}
+                    {currentView === 'provider' && <ServiceProviderApp onLogout={handleLogout} onBackToUserTypeSelection={handleLogout} />}
+                    {currentView === 'forgotPassword' && <ForgotPasswordScreen onBackToLogin={() => setCurrentView('login')} />}
+                    {currentView === 'settings' && <SettingsScreen onBack={handleSettingsBack} setAppLanguage={setAppLanguage} />}
                 </LanguageContext.Provider>
             );
         }
